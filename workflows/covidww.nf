@@ -6,6 +6,8 @@
 
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { BWAMEM2_INDEX		 } from '../modules/nf-core/bwamem2/index/main'
+include { BWAMEM2_MEM		 } from '../modules/nf-core/bwamem2/mem/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'

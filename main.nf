@@ -47,6 +47,7 @@ workflow NFCORE_COVIDWW {
 
     take:
     samplesheet // channel: samplesheet read in from --input
+    reference   // channel: reference genome read in from --reference_genome. Default NC_045512.2
 
     main:
 
@@ -54,7 +55,8 @@ workflow NFCORE_COVIDWW {
     // WORKFLOW: Run pipeline
     //
     COVIDWW (
-        samplesheet
+        samplesheet,
+        reference
     )
 
     emit:
@@ -81,14 +83,16 @@ workflow {
         params.monochrome_logs,
         args,
         params.outdir,
-        params.input
+        params.input,
+        params.reference_genome
     )
 
     //
     // WORKFLOW: Run main workflow
     //
     NFCORE_COVIDWW (
-        PIPELINE_INITIALISATION.out.samplesheet
+        PIPELINE_INITIALISATION.out.samplesheet,
+        PIPELINE_INITIALISATION.out.reference
     )
 
     //

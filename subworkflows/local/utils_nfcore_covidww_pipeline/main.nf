@@ -8,6 +8,8 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+import java.io.File
+
 include { UTILS_NFVALIDATION_PLUGIN } from '../../nf-core/utils_nfvalidation_plugin'
 include { paramsSummaryMap          } from 'plugin/nf-validation'
 include { fromSamplesheet           } from 'plugin/nf-validation'
@@ -36,10 +38,14 @@ workflow PIPELINE_INITIALISATION {
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
     input             //  string: Path to input samplesheet
+    reference_genome  //  string: Path to reference genome to use
+
+
 
     main:
 
     ch_versions = Channel.empty()
+    reference_genome = reference_genome ?: "${projectDir}/assets/NC_045512.2.fasta"
 
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
@@ -100,8 +106,18 @@ workflow PIPELINE_INITIALISATION {
         }
         .set { ch_samplesheet }
 
+
+    //
+    // Create channel from reference genome provided through params.reference_genome
+    //
+    Channel.fromPath(reference_genome, checkIfExists: true)
+        .map { [['reference'], it] }
+        .set { ch_reference }
+
+
     emit:
     samplesheet = ch_samplesheet
+    reference = ch_reference
     versions    = ch_versions
 }
 

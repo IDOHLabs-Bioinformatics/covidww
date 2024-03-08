@@ -6,8 +6,12 @@
 
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { FASTP              } from '../modules/nf-core/fastp'
 include { BWAMEM2_INDEX		 } from '../modules/nf-core/bwamem2/index/main'
 include { BWAMEM2_MEM		 } from '../modules/nf-core/bwamem2/mem/main'
+include { IVAR_TRIM          } from '../modules/nf-core/ivar/trim'
+include { FREYJA_VARIANTS    } from '../modules/nf-core/freyja/variants'
+include { FREYJA_DEMIX       } from '../modules/nf-core/freyja/demix'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -23,6 +27,7 @@ workflow COVIDWW {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
+    ch_reference   // channel: reference genome read in from --reference_genome. Default NC_045512.2
 
     main:
 
@@ -35,6 +40,16 @@ workflow COVIDWW {
     FASTQC (
         ch_samplesheet
     )
+
+    //
+    // MODULE: Run BWAmem2 index
+    //
+    BWAMEM2_INDEX (
+        ch_reference
+    )
+
+
+
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 

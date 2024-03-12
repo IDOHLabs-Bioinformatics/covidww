@@ -84,7 +84,7 @@ workflow {
         args,
         params.outdir,
         params.input,
-        params.reference_genome
+        params.reference_genome,
     )
 
     //

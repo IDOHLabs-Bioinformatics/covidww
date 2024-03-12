@@ -111,7 +111,7 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from reference genome provided through params.reference_genome
     //
     Channel.fromPath(reference_genome, checkIfExists: true)
-        .map { [['reference'], it] }
+        .map { [reference_genome, it] }
         .set { ch_reference }
 
 

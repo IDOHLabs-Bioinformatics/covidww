@@ -39,13 +39,14 @@ workflow PIPELINE_INITIALISATION {
     outdir            //  string: The output directory where the results will be saved
     input             //  string: Path to input samplesheet
     reference_genome  //  string: Path to reference genome to use
-
+    adapter_fasta     //  string: Path to a file with adapters to trim
 
 
     main:
 
     ch_versions = Channel.empty()
     reference_genome = reference_genome ?: "${projectDir}/assets/NC_045512.2.fasta"
+    adapter_fasta = adapter_fasta ?: "${projectDir}/assets/empty.fasta"
 
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
@@ -114,10 +115,17 @@ workflow PIPELINE_INITIALISATION {
         .map { [reference_genome, it] }
         .set { ch_reference }
 
+    //
+    // Create a channel from the adapters fasta file
+    //
+    Channel.fromPath(adapter_fasta, checkIfExists: true)
+        .set { ch_adapters }
+
 
     emit:
     samplesheet = ch_samplesheet
     reference = ch_reference
+    adapters = ch_adapters
     versions    = ch_versions
 }
 

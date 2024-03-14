@@ -38,6 +38,19 @@
                     "description": "Path to the reference genome for alignment",
                     "hidden": true
                 },
+                "adapter_fasta":{
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Fasta file with adapters to trim",
+                    "help_text": "If you need to trim non-standard adapters, supply a fasta file with adapters for fastp to trim."
+                },
+                "save_trim_fail": {
+                    "type": "boolean",
+                    "description": "Save the sequences that failed to pass trimming to `*.fail.fastq.gz`"
+                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",

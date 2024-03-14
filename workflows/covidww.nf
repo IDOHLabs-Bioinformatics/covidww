@@ -27,7 +27,8 @@ workflow COVIDWW {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
-    ch_reference   // channel: reference genome read in from --reference_genome. Default NC_045512.2
+    ch_reference   // channel: reference genome read in from --reference_genome
+    ch_adapters    // channel: fasta file with additional adapters to trim read in from --adapter_fasta
 
     main:
 
@@ -48,8 +49,21 @@ workflow COVIDWW {
         ch_reference
     )
 
-    BWAMEM2_MEM (
+    //
+    // MODULE: Run Fastp
+    //
+    FASTP (
         ch_samplesheet,
+        ch_adapters,
+        params.save_trim_fail,
+        params.save_merged
+    )
+
+    //
+    // MODULE: Run BWAmem2 mem
+    //
+    BWAMEM2_MEM (
+        FASTP.out.reads,
         BWAMEM2_INDEX.out.index
     )
 

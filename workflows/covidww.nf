@@ -7,8 +7,8 @@
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { FASTP              } from '../modules/nf-core/fastp'
-include { BWAMEM2_INDEX		 } from '../modules/local/bwamem2/index/main'
-include { BWAMEM2_MEM		 } from '../modules/local/bwamem2/mem/main'
+include { BWAMEM2_INDEX		 } from '../modules/nf-core/bwamem2/index/main'
+include { BWAMEM2_MEM		 } from '../modules/nf-core/bwamem2/mem/main'
 include { IVAR_TRIM          } from '../modules/nf-core/ivar/trim'
 include { FREYJA_VARIANTS    } from '../modules/nf-core/freyja/variants'
 include { FREYJA_DEMIX       } from '../modules/nf-core/freyja/demix'
@@ -64,7 +64,8 @@ workflow COVIDWW {
     //
     BWAMEM2_MEM (
         FASTP.out.reads,
-        BWAMEM2_INDEX.out.index
+        BWAMEM2_INDEX.out.index.first(),
+        params.sort_bam
     )
 
 

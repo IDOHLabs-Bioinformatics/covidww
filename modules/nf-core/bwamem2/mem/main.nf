@@ -1,6 +1,6 @@
 process BWAMEM2_MEM {
-    tag "$meta"
-    label "process_high"
+    tag "$meta.id"
+    label 'process_high'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -9,11 +9,12 @@ process BWAMEM2_MEM {
 
     input:
     tuple val(meta), path(reads)
-    each path(reference)
+    tuple val(meta2), path(index)
+    val   sort_bam
 
     output:
     tuple val(meta), path("*.bam"), emit: bam
-    path "versions.yml",            emit: versions
+    path  "versions.yml"          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,19 +22,18 @@ process BWAMEM2_MEM {
     script:
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
-    def args3 = task.ext.args3 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def samtools_command = sort_bam ? 'sort' : 'view'
     """
     INDEX=`find -L ./ -name "*.amb" | sed 's/\\.amb\$//'`
 
     bwa-mem2 \\
         mem \\
-        ${args} \\
-        -t ${task.cpus} \\
+        $args \\
+        -t $task.cpus \\
         \$INDEX \\
-        ${reads} \\
-        | samtools view -b \\
-        | samtools sort -o ${prefix}.bam
+        $reads \\
+        | samtools $samtools_command $args2 -@ $task.cpus -o ${prefix}.bam -
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -46,7 +46,6 @@ process BWAMEM2_MEM {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.bam
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bwamem2: \$(echo \$(bwa-mem2 version 2>&1) | sed 's/.* //')

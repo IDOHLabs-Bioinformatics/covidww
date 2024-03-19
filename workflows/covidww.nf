@@ -54,7 +54,7 @@ workflow COVIDWW {
     //
     FASTP (
         ch_samplesheet,
-        ch_adapters,
+        ch_adapters.first(),
         params.save_trim_fail,
         params.save_merged
     )

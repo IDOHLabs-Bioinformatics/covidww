@@ -9,6 +9,7 @@ include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { FASTP              } from '../modules/nf-core/fastp'
 include { BWAMEM2_INDEX		 } from '../modules/nf-core/bwamem2/index/main'
 include { BWAMEM2_MEM		 } from '../modules/nf-core/bwamem2/mem/main'
+include { SAMTOOLS_INDEX		     } from '../modules/local/samtools/index'
 include { IVAR_TRIM          } from '../modules/nf-core/ivar/trim'
 include { FREYJA_VARIANTS    } from '../modules/nf-core/freyja/variants'
 include { FREYJA_DEMIX       } from '../modules/nf-core/freyja/demix'
@@ -54,7 +55,7 @@ workflow COVIDWW {
     //
     FASTP (
         ch_samplesheet,
-        ch_adapters,
+        ch_adapters.first(),
         params.save_trim_fail,
         params.save_merged
     )
@@ -68,10 +69,15 @@ workflow COVIDWW {
         params.sort_bam
     )
 
-
+    //
+    // MODULE: Index the bam file
+    //
+    SAMTOOLS_INDEX (
+        BWAMEM2_MEM.out.bam
+    )
 
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    ch_versions = ch_versions.mix(FASTQC.out.versions.first(),FASTP.out.versions.first(), BWAMEM2_INDEX.out.versions.first(), BWAMEM2_MEM.out.versions.first())
 
     //
     // Collate and save software versions

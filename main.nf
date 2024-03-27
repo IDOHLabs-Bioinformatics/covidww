@@ -49,6 +49,7 @@ workflow NFCORE_COVIDWW {
     samplesheet // channel: samplesheet read in from --input
     reference   // channel: reference genome read in from --reference_genome
     adapters    // channel: fasta file with additional adapters to trim read in from --adapter_fasta
+    bed         // channel: bed file with primers
 
     main:
 
@@ -58,7 +59,8 @@ workflow NFCORE_COVIDWW {
     COVIDWW (
         samplesheet,
         reference,
-        adapters
+        adapters,
+        bed
     )
 
     emit:
@@ -87,7 +89,8 @@ workflow {
         params.outdir,
         params.input,
         params.reference_genome,
-        params.adapter_fasta
+        params.adapter_fasta,
+        params.bed_file
     )
 
     //
@@ -96,7 +99,8 @@ workflow {
     NFCORE_COVIDWW (
         PIPELINE_INITIALISATION.out.samplesheet,
         PIPELINE_INITIALISATION.out.reference,
-        PIPELINE_INITIALISATION.out.adapters
+        PIPELINE_INITIALISATION.out.adapters,
+        PIPELINE_INITIALISATION.out.bed
     )
 
     //

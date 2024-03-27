@@ -11,7 +11,8 @@ process SAMTOOLS_INDEX {
     tuple val(meta), path(bam)
 
     output:
-    tuple val(meta), path(bam), path("*.bai")
+    tuple val(meta), path(bam), path("*.bai"), emit: bai
+    path "versions.yml"                      , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

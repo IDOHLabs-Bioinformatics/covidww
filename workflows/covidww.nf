@@ -6,13 +6,13 @@
 
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { FASTP              } from '../modules/nf-core/fastp'
+include { FASTP              } from '../modules/nf-core/fastp/main'
 include { BWAMEM2_INDEX		 } from '../modules/nf-core/bwamem2/index/main'
 include { BWAMEM2_MEM		 } from '../modules/nf-core/bwamem2/mem/main'
-include { SAMTOOLS_INDEX		     } from '../modules/local/samtools/index'
-include { IVAR_TRIM          } from '../modules/nf-core/ivar/trim'
-include { FREYJA_VARIANTS    } from '../modules/nf-core/freyja/variants'
-include { FREYJA_DEMIX       } from '../modules/nf-core/freyja/demix'
+include { SAMTOOLS_INDEX     } from '../modules/local/samtools/index/main'
+include { IVAR_TRIM          } from '../modules/local/ivar/main'
+include { FREYJA_VARIANTS    } from '../modules/nf-core/freyja/variants/main'
+include { FREYJA_DEMIX       } from '../modules/nf-core/freyja/demix/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -30,6 +30,7 @@ workflow COVIDWW {
     ch_samplesheet // channel: samplesheet read in from --input
     ch_reference   // channel: reference genome read in from --reference_genome
     ch_adapters    // channel: fasta file with additional adapters to trim read in from --adapter_fasta
+    ch_bed         // channel: bed file with primers
 
     main:
 
@@ -75,6 +76,28 @@ workflow COVIDWW {
     SAMTOOLS_INDEX (
         BWAMEM2_MEM.out.bam
     )
+
+    //
+    // MODULE: TEST
+    //
+    IVAR_TRIM (
+        SAMTOOLS_INDEX.out.bai,
+        ch_bed.first()
+    )
+
+    //
+    // MODULE: Run iVar
+    //
+    //IVAR_TRIM (
+    //    SAMTOOLS_INDEX.out.bai,
+    //    ch_bed.first()
+    //)
+
+    //FREYJA_VARIANTS (
+    //    IVAR_TRIM.out.bam,
+    //    ch_reference.first()
+    //)
+
 
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first(),FASTP.out.versions.first(), BWAMEM2_INDEX.out.versions.first(), BWAMEM2_MEM.out.versions.first())

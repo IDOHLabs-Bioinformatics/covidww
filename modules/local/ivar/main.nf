@@ -1,5 +1,5 @@
 process IVAR_TRIM {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
@@ -12,9 +12,9 @@ process IVAR_TRIM {
     path bed
 
     output:
-    tuple val(meta), path("*.bam"), emit: bam
-    tuple val(meta), path('*.log'), emit: log
-    path "versions.yml"           , emit: versions
+    tuple val(meta), path("*.bam"),             emit: bam
+    path("*.log"),                              emit: log
+    path("versions.yml"),                       emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,11 +24,23 @@ process IVAR_TRIM {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     ivar trim \\
-        $args \\
         -i $bam \\
         -b $bed \\
-        -p $prefix \\
-        > ${prefix}.ivar.log
+        -p ${prefix}_trimmed \\
+        ${args} \\
+        >  ${prefix}.log
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        ivar: \$(echo \$(ivar version 2>&1) | sed 's/^.*iVar version //; s/ .*\$//')
+    END_VERSIONS
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_trimmed.bam
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

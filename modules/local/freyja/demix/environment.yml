@@ -1,4 +1,4 @@
-name: freyja_demix
+name: freyja_variants
 channels:
   - conda-forge
   - bioconda

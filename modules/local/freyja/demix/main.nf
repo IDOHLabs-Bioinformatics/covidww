@@ -1,7 +1,6 @@
 process FREYJA_DEMIX {
-    tag "$meta.id"
-    label 'process_low'
-
+    tag "${meta.id}"
+    label "process_medium"
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -10,28 +9,20 @@ process FREYJA_DEMIX {
 
     input:
     tuple val(meta), path(variants), path(depths)
-    path barcodes
-    path lineages_meta
 
     output:
-    tuple val(meta), path("*.tsv"), emit: demix
-    path "versions.yml"           , emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
+    path("*demix.txt"),   emit: demix
+    path("versions.yml"), emit: versions
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    freyja \\
-        demix \\
+    freyja demix \\
         $args \\
-        --output ${prefix}.tsv \\
-        --barcodes $barcodes \\
-        --meta $lineages_meta \\
         $variants \\
-        $depths
+        $depths \\
+        --output ${prefix}_demix.txt \\
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -42,7 +33,7 @@ process FREYJA_DEMIX {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}.tsv
+    touch ${prefix}_demix.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

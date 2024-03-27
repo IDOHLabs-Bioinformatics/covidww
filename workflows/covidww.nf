@@ -14,6 +14,7 @@ include { IVAR_TRIM          } from '../modules/local/ivar/main'
 include { SAMTOOLS_SORT      } from '../modules/local/samtools/sort/main'
 include { FREYJA_VARIANTS    } from '../modules/nf-core/freyja/variants/main'
 include { FREYJA_DEMIX       } from '../modules/local/freyja/demix/main'
+include { FREYJA_CLEAN       } from '../modules/local/freyja_clean'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -106,6 +107,13 @@ workflow COVIDWW {
     //
     FREYJA_DEMIX (
         FREYJA_VARIANTS.out.variants
+    )
+
+    //
+    // MODULE: Fryja results cleaning
+    //
+    FREYJA_CLEAN (
+        FREYJA_DEMIX.out.demix.collect()
     )
 
 

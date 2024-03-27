@@ -48,7 +48,7 @@ workflow COVIDWW {
     // MODULE: Run BWAmem2 index
     //
     BWAMEM2_INDEX (
-        ch_reference
+        Channel.of('reference_genome').combine(ch_reference)
     )
 
     //
@@ -78,7 +78,7 @@ workflow COVIDWW {
     )
 
     //
-    // MODULE: TEST
+    // MODULE: trim primers with iVar
     //
     IVAR_TRIM (
         SAMTOOLS_INDEX.out.bai,
@@ -86,13 +86,8 @@ workflow COVIDWW {
     )
 
     //
-    // MODULE: Run iVar
+    // MODULE: Freyja find variants
     //
-    //IVAR_TRIM (
-    //    SAMTOOLS_INDEX.out.bai,
-    //    ch_bed.first()
-    //)
-
     //FREYJA_VARIANTS (
     //    IVAR_TRIM.out.bam,
     //    ch_reference.first()

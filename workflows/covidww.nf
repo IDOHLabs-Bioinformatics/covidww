@@ -88,10 +88,10 @@ workflow COVIDWW {
     //
     // MODULE: Freyja find variants
     //
-    //FREYJA_VARIANTS (
-    //    IVAR_TRIM.out.bam,
-    //    ch_reference.first()
-    //)
+    FREYJA_VARIANTS (
+        IVAR_TRIM.out.bam,
+        ch_reference.first()
+    )
 
 
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})

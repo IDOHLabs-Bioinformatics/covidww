@@ -11,8 +11,9 @@ include { BWAMEM2_INDEX		 } from '../modules/nf-core/bwamem2/index/main'
 include { BWAMEM2_MEM		 } from '../modules/nf-core/bwamem2/mem/main'
 include { SAMTOOLS_INDEX     } from '../modules/local/samtools/index/main'
 include { IVAR_TRIM          } from '../modules/local/ivar/main'
+include { SAMTOOLS_SORT      } from '../modules/local/samtools/sort/main'
 include { FREYJA_VARIANTS    } from '../modules/nf-core/freyja/variants/main'
-include { FREYJA_DEMIX       } from '../modules/nf-core/freyja/demix/main'
+include { FREYJA_DEMIX       } from '../modules/local/freyja/demix/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -86,11 +87,25 @@ workflow COVIDWW {
     )
 
     //
+    // MODULE: samtools sort
+    //
+    SAMTOOLS_SORT {
+        IVAR_TRIM.out.bam
+    }
+
+    //
     // MODULE: Freyja find variants
     //
     FREYJA_VARIANTS (
-        IVAR_TRIM.out.bam,
+        SAMTOOLS_SORT.out.bam,
         ch_reference.first()
+    )
+
+    //
+    // MODULE: Freyja demixing
+    //
+    FREYJA_DEMIX (
+        FREYJA_VARIANTS.out.variants
     )
 
 

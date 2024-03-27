@@ -17,11 +17,11 @@ process FREYJA_CLEAN {
     mkdir demix
     mv *.txt demix
 
-    python ${projectDir}/bin/freyja_parsing.py --input demix $args
+    python ${projectDir}/bin/freyja_cleaning.py --input demix $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        Python: \$(echo \$(python --version 2>&1 | sed 's/^.*Version: //; s/ .*\$//')
+        Python: \$(echo \$(python --version 2>&1) | cut -d ' ' -f 2)
     END_VERSIONS
     """
 
@@ -31,7 +31,7 @@ process FREYJA_CLEAN {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        Python: \$(echo \$(python --version 2>&1 | cut -d ' ' -f 2)
+        Python: \$(echo \$(python --version 2>&1) | cut -d ' ' -f 2)
     END_VERSIONS
     """
 }

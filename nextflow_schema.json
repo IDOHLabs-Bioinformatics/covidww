@@ -64,6 +64,15 @@
                     "description": "Bed file of primers",
                     "help_text": "The primers used when performing amplicon sequencing in bed format."
                 },
+                "metadata": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "A comma separated file containing metadata",
+                    "help": "A comma separated file containing the columns Sample, City, State, Latitude, and Longitude that is used to plot the data to a state map."
+                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",

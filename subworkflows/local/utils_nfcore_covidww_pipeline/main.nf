@@ -41,6 +41,7 @@ workflow PIPELINE_INITIALISATION {
     reference_genome  //  string: Path to reference genome to use
     adapter_fasta     //  string: Path to a file with adapters to trim
     bed_file          //  string: Path to the bed file with primers
+    metadata_file     //  string: Path to the relevant metadata
 
 
     main:
@@ -122,16 +123,23 @@ workflow PIPELINE_INITIALISATION {
         .set { ch_adapters }
 
     //
-    // Create a channel to from the bed file
+    // Create a channel from the bed file
     //
     Channel.fromPath(bed_file, checkIfExists: true)
         .set { ch_bed }
+
+    //
+    // Create a channel from the metadata file
+    //
+    Channel.fromPath(metadata_file, checkIfExists: true)
+        .set{ ch_metadata }
 
     emit:
     samplesheet = ch_samplesheet
     reference = ch_reference
     adapters = ch_adapters
     bed = ch_bed
+    metadata = ch_metadata
     versions = ch_versions
 }
 

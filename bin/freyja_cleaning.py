@@ -95,7 +95,7 @@ def freyja_results(freyja_results_directory):
         if result[0] != '.':  # ignore the nextflow files
             with open(os.path.join(freyja_results_directory, result), 'r') as file:
                 lines = file.readlines()
-                name = lines[0].split('\t')[1].split('_')[0].strip()
+                name = lines[0].split('\t')[1].split('_')[0].strip().split('.')[0]
                 tmp_lineages = lines[2].strip().split('\t')[1].split(' ')
                 str_abundances = lines[3].strip().split('\t')[1].split(' ')
                 tmp_abundances = [float(x) for x in str_abundances]

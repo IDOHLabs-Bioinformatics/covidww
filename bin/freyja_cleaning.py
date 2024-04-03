@@ -1,13 +1,13 @@
-# -*- coding: utf-8 -*-
 """
 Created on Mon Mar  4 13:41:54 2024
 
-@author: DSchaeper
+@author: David Schaeper
 """
 
-import os
-import pandas as pd
 import argparse
+import os
+
+import pandas as pd
 
 
 def collapsing(pango, proportion):
@@ -93,7 +93,7 @@ def freyja_results(freyja_results_directory):
     # information as a list of lists in the value
     for result in os.listdir(freyja_results_directory):
         if result[0] != '.':  # ignore the nextflow files
-            with open(os.path.join(freyja_results_directory, result), 'r') as file:
+            with open(os.path.join(freyja_results_directory, result)) as file:
                 lines = file.readlines()
                 name = lines[0].split('\t')[1].split('_')[0].strip().split('.')[0]
                 tmp_lineages = lines[2].strip().split('\t')[1].split(' ')

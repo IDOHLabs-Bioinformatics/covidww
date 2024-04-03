@@ -15,6 +15,7 @@ include { SAMTOOLS_SORT      } from '../modules/local/samtools/sort/main'
 include { FREYJA_VARIANTS    } from '../modules/nf-core/freyja/variants/main'
 include { FREYJA_DEMIX       } from '../modules/local/freyja/demix/main'
 include { FREYJA_CLEAN       } from '../modules/local/freyja_clean'
+include { MAP_PLOT           } from '../modules/local/map_plot'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -111,14 +112,19 @@ workflow COVIDWW {
     )
 
     //
-    // MODULE: Fryja results cleaning
+    // MODULE: Freyja results cleaning
     //
     FREYJA_CLEAN (
         FREYJA_DEMIX.out.demix.collect()
     )
 
-
-
+    //
+    // MODULE: Plot results on a state map
+    //
+    MAP_PLOT (
+        FREYJA_CLEAN.out.csv,
+        ch_metadata
+    )
 
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first(),FASTP.out.versions.first(), BWAMEM2_INDEX.out.versions.first(), BWAMEM2_MEM.out.versions.first())

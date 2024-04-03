@@ -129,10 +129,17 @@ workflow PIPELINE_INITIALISATION {
         .set { ch_bed }
 
     //
-    // Create a channel from the metadata file
+    // Create a channel from the metadata file if present
+    // if default of '', then make a holder value channel
     //
-    Channel.fromPath(metadata_file, checkIfExists: true)
+    if (metadata_file == '') {
+        Channel.empty()
         .set{ ch_metadata }
+    }else {
+        Channel.fromPath(metadata_file, checkIfExists: true)
+        .set{ ch_metadata }
+    }
+
 
     emit:
     samplesheet = ch_samplesheet

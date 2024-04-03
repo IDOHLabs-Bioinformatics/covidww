@@ -121,6 +121,7 @@ workflow COVIDWW {
     //
     // MODULE: Plot results on a state map
     //
+
     MAP_PLOT (
         FREYJA_CLEAN.out.csv,
         ch_metadata

@@ -13,8 +13,8 @@ process IVAR_TRIM {
 
     output:
     tuple val(meta), path("*.bam"),             emit: bam
-    path("*.log"),                              emit: log
-    path("versions.yml"),                       emit: versions
+    path "*.log",                              emit: log
+    path "versions.yml",                       emit: versions
 
     when:
     task.ext.when == null || task.ext.when

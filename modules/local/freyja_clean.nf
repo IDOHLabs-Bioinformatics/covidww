@@ -1,12 +1,13 @@
 process FREYJA_CLEAN {
-    tag "parse"
+    tag "parse_all"
     label "process_low"
 
     input:
     path("*")
 
     output:
-    path("*.csv"), emit: csv
+    path("*.csv"),        emit: csv
+    path "versions.yml",  emit: versions
 
     when:
     task.ext.when == null || task.ext.when

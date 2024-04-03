@@ -12,7 +12,7 @@ process SAMTOOLS_SORT {
 
     output:
     tuple val(meta), path("*_sorted.bam"), emit: bam
-
+    path "versions.yml",                   emit: versions
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def args = task.ext.args ?: ''

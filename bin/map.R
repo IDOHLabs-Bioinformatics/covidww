@@ -12,12 +12,12 @@ make_map <- function(frame1, title) {
   col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
   colors <- sample(col_vector, n)
   colors <- append(colors, "black")
-  
+
   # pivot to the proper format for scatterpie
   tmp <- frame1 %>% pivot_wider(names_from = Lineage, values_from = x)
   # set a radius
   tmp$radius <- .15
-  
+
   # collect labels used for plotting
   columns <- colnames(tmp)
   columns <- columns[! columns %in% c('City', 'Sample', 'Abundance', 'State',
@@ -25,10 +25,10 @@ make_map <- function(frame1, title) {
 
   # replace NA with 0
   tmp[is.na(tmp)] <- 0
-  
+
   # get the map of the state
   state <- subset(map_data('state'), map_data('state')$region == tolower(tmp$State[1]))
-  
+
   # plot
   p <- ggplot(state, aes(long, lat)) +
     geom_map(map=state, aes(map_id=region), fill=NA, color="black") +
@@ -52,7 +52,7 @@ title <- paste('Wasterwater Deconvolution Analysis', Sys.Date())
 results <- subset(results, results$Abundance >= .1)
 
 # merge the metadata and results
-merged <- merge(results, subset(metadata, select=c('Sample', 'City', 'State', 'Latitude', 'Longitude')), 
+merged <- merge(results, subset(metadata, select=c('Sample', 'City', 'State', 'Latitude', 'Longitude')),
                 by.x='Sample', by.y='Sample')
 # combined <- aggregate(merged$est_counts, by=list(merged$City, merged$target_id), FUN=sum)
 
@@ -66,14 +66,14 @@ merged$other <- ifelse(merged$Abundance / merged$x <= .05, TRUE, FALSE)
 if (sum(merged$other == TRUE) > 0) {
   others <- subset(merged, merged$other == TRUE)
   others$Lineage <- 'Other'
-  others <- aggregate(others$Abundance, by=list(others$City, others$Sample, 
-                                                others$Lineage, others$State, 
-                                                others$Latitude, others$Longitude, 
-                                                others$x, others$other), 
+  others <- aggregate(others$Abundance, by=list(others$City, others$Sample,
+                                                others$Lineage, others$State,
+                                                others$Latitude, others$Longitude,
+                                                others$x, others$other),
                       FUN=sum)
   colnames(others) <- c('City', 'Sample', 'Lineage', 'State', 'Latitude', 'Longitude', 'x', 'other', 'Abundance')
   merged <- subset(merged, merged$other == FALSE)
   merged <- rbind(merged, others)
 }
 
-ggsave(paste0(title, '.png'), make_map(merged, title))
+ggsave(paste0(title, '.png'), make_map(merged, title), bg='white')

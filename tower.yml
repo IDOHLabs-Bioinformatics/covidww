@@ -1,5 +1,7 @@
 reports:
   multiqc_report.html:
     display: "MultiQC HTML report"
-  samplesheet.csv:
-    display: "Auto-created samplesheet with collated metadata and FASTQ paths"
+  "**/freyja/combined_freyja_report.csv":
+    display: "Freyja deconvolution result"
+  "**/map/*.png":
+    display: "Map of the samples and their deconvolution results as pie charts on the city locations"

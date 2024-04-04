@@ -6,6 +6,7 @@ Created on Mon Mar  4 13:41:54 2024
 
 import argparse
 import os
+from datetime import date
 
 import pandas as pd
 
@@ -139,4 +140,5 @@ if __name__ == '__main__':
     if args.output:
         frame.to_csv(args.output, index=False)
     else:
-        frame.to_csv('combined_freyja_report.csv', index=False)
+        handle = 'wastewater_analysis_' + str(date.today()) + '.csv'
+        frame.to_csv('wastewater_analysis.csv', index=False)

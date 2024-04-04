@@ -40,7 +40,7 @@ workflow PIPELINE_INITIALISATION {
     input             //  string: Path to input samplesheet
     reference_genome  //  string: Path to reference genome to use
     adapter_fasta     //  string: Path to a file with adapters to trim
-    bed_file          //  string: Path to the bed file with primers
+    primers          //  string: Path to the bed file with primers
     metadata_file     //  string: Path to the relevant metadata
 
 
@@ -81,10 +81,6 @@ workflow PIPELINE_INITIALISATION {
     UTILS_NFCORE_PIPELINE (
         nextflow_cli_args
     )
-    //
-    // Custom validation for pipeline parameters
-    //
-    validateInputParameters()
 
     //
     // Create channel from input file provided through params.input
@@ -125,8 +121,8 @@ workflow PIPELINE_INITIALISATION {
     //
     // Create a channel from the bed file
     //
-    Channel.fromPath(bed_file, checkIfExists: true)
-        .set { ch_bed }
+    Channel.fromPath(primers, checkIfExists: true)
+        .set { ch_primers }
 
     //
     // Create a channel from the metadata file if present
@@ -145,7 +141,7 @@ workflow PIPELINE_INITIALISATION {
     samplesheet = ch_samplesheet
     reference = ch_reference
     adapters = ch_adapters
-    bed = ch_bed
+    primers = ch_primers
     metadata = ch_metadata
     versions = ch_versions
 }
@@ -193,13 +189,6 @@ workflow PIPELINE_COMPLETION {
 ========================================================================================
 */
 //
-// Check and validate pipeline parameters
-//
-def validateInputParameters() {
-    genomeExistsError()
-}
-
-//
 // Validate channels from input samplesheet
 //
 def validateInputSamplesheet(input) {
@@ -212,31 +201,6 @@ def validateInputSamplesheet(input) {
     }
 
     return [ metas[0], fastqs ]
-}
-//
-// Get attribute from genome config file e.g. fasta
-//
-def getGenomeAttribute(attribute) {
-    if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
-        if (params.genomes[ params.genome ].containsKey(attribute)) {
-            return params.genomes[ params.genome ][ attribute ]
-        }
-    }
-    return null
-}
-
-//
-// Exit pipeline if incorrect --genome key provided
-//
-def genomeExistsError() {
-    if (params.genomes && params.genome && !params.genomes.containsKey(params.genome)) {
-        def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-            "  Genome '${params.genome}' not found in any config files provided to the pipeline.\n" +
-            "  Currently, the available genome keys are:\n" +
-            "  ${params.genomes.keySet().join(", ")}\n" +
-            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-        error(error_string)
-    }
 }
 
 //
@@ -281,11 +245,6 @@ def methodsDescriptionText(mqc_methods_yaml) {
     // Tool references
     meta["tool_citations"] = ""
     meta["tool_bibliography"] = ""
-
-    // TODO nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
-    // meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
-    // meta["tool_bibliography"] = toolBibliographyText()
-
 
     def methods_text = mqc_methods_yaml.text
 

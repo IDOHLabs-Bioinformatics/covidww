@@ -33,7 +33,7 @@ workflow COVIDWW {
     ch_samplesheet // channel: samplesheet read in from --input
     ch_reference   // channel: reference genome read in from --reference_genome
     ch_adapters    // channel: fasta file with additional adapters to trim read in from --adapter_fasta
-    ch_bed         // channel: bed file with primers read in from --bed_file
+    ch_primers     // channel: bed file with primers read in from --primers
     ch_metadata    // channel: metadata file read in from --metadata
 
     main:
@@ -86,7 +86,7 @@ workflow COVIDWW {
     //
     IVAR_TRIM (
         SAMTOOLS_INDEX.out.bai,
-        ch_bed.first()
+        ch_primers.first()
     )
 
     //

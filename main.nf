@@ -21,19 +21,6 @@ include { COVIDWW  } from './workflows/covidww'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_covidww_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_covidww_pipeline'
 
-include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_covidww_pipeline'
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = getGenomeAttribute('fasta')
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -49,7 +36,7 @@ workflow NFCORE_COVIDWW {
     samplesheet // channel: samplesheet read in from --input
     reference   // channel: reference genome read in from --reference_genome
     adapters    // channel: fasta file with additional adapters to trim read in from --adapter_fasta
-    bed         // channel: bed file with primers read in from --bed_file
+    primers         // channel: bed file with primers read in from --primers
     metadata    // channel: metadata file read in from --metadata
 
     main:
@@ -61,7 +48,7 @@ workflow NFCORE_COVIDWW {
         samplesheet,
         reference,
         adapters,
-        bed,
+        primers,
         metadata
     )
 
@@ -92,7 +79,7 @@ workflow {
         params.input,
         params.reference_genome,
         params.adapter_fasta,
-        params.bed_file,
+        params.primers,
         params.metadata
     )
 
@@ -103,7 +90,7 @@ workflow {
         PIPELINE_INITIALISATION.out.samplesheet,
         PIPELINE_INITIALISATION.out.reference,
         PIPELINE_INITIALISATION.out.adapters,
-        PIPELINE_INITIALISATION.out.bed,
+        PIPELINE_INITIALISATION.out.primers,
         PIPELINE_INITIALISATION.out.metadata
     )
 

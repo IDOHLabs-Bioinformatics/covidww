@@ -2,42 +2,54 @@ library(ggplot2)
 library(tidyverse)
 library(scatterpie)
 library(RColorBrewer)
+library(tidygeocoder)
 theme_set(theme_void())
 args <- commandArgs(T)
 
-make_map <- function(frame1, title) {
+make_map <- function(frame) {
   # set largely distinct colors
-  n <- length(unique(frame1$Lineage)) - 1
+  n <- length(unique(frame$Lineage)) - 1
   qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
   col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
   colors <- sample(col_vector, n)
   colors <- append(colors, "black")
 
   # pivot to the proper format for scatterpie
-  tmp <- frame1 %>% pivot_wider(names_from = Lineage, values_from = x)
+  tmp <- frame %>% pivot_wider(names_from = Lineage, values_from = x)
   # set a radius
   tmp$radius <- .15
 
   # collect labels used for plotting
   columns <- colnames(tmp)
   columns <- columns[! columns %in% c('City', 'Sample', 'Abundance', 'State',
-                                      'Latitude', 'Longitude', 'other', 'radius')]
+                                      'lat', 'long', 'other', 'radius', 'address')]
 
   # replace NA with 0
   tmp[is.na(tmp)] <- 0
 
   # get the map of the state
-  state <- subset(map_data('state'), map_data('state')$region == tolower(tmp$State[1]))
+  state <- subset(map_data('state'), map_data('state')$region %in% tolower(unique(frame$State)))
 
   # plot
   p <- ggplot(state, aes(long, lat)) +
     geom_map(map=state, aes(map_id=region), fill=NA, color="black") +
     coord_quickmap()
-  p + geom_scatterpie(aes(x=Longitude, y=Latitude, group=City, r=radius),
+  p + geom_scatterpie(aes(x=long, y=lat, group=address, r=radius),
                       data=tmp, cols=columns, alpha=.7) +
-    scale_fill_manual(values=colors, name='Variants') +
-    ggtitle(title)
+    scale_fill_manual(values=colors, name='Variants')
 }
+
+
+make_bar <- function(frame) {
+  frame$relative <- frame$Abundance / frame$x
+  
+  ggplot(frame, aes(x=address, y=relative, fill=Lineage)) +
+    geom_bar(stat='identity') +
+    theme_bw() +
+    ylab('Relative Abundance') +
+    xlab('Location')
+}
+
 
 # read the files
 input <- args[1]
@@ -45,14 +57,14 @@ metadata <- args[2]
 results <- read.csv(input, sep=',')
 metadata <- read.csv(metadata, sep=',')
 
-title <- paste('Wasterwater Deconvolution Analysis', Sys.Date())
-
+metadata$address <- paste(metadata$State, metadata$City, sep=',')
+metadata <- geocode(metadata, address)
 
 # filter down the results
 results <- subset(results, results$Abundance >= .1)
 
 # merge the metadata and results
-merged <- merge(results, subset(metadata, select=c('Sample', 'City', 'State', 'Latitude', 'Longitude')),
+merged <- merge(results, subset(metadata, select=c('Sample', 'City', 'State', 'lat', 'long', 'address')),
                 by.x='Sample', by.y='Sample')
 # combined <- aggregate(merged$est_counts, by=list(merged$City, merged$target_id), FUN=sum)
 
@@ -71,9 +83,16 @@ if (sum(merged$other == TRUE) > 0) {
                                                 others$Latitude, others$Longitude,
                                                 others$x, others$other),
                       FUN=sum)
-  colnames(others) <- c('City', 'Sample', 'Lineage', 'State', 'Latitude', 'Longitude', 'x', 'other', 'Abundance')
+  colnames(others) <- c('City', 'Sample', 'Lineage', 'State', 'lat', 'long', 'x', 'other', 'Abundance')
   merged <- subset(merged, merged$other == FALSE)
   merged <- rbind(merged, others)
 }
 
-ggsave(paste0(title, '.png'), make_map(merged, title), bg='white')
+title <- paste('abundance_map_', Sys.Date())
+ggsave(paste0(title, '.png'), make_map(merged), bg='white')
+title <- paste('abundance_bar_', Sys.Date())
+ggsave(paste0(title, '.png'), make_bar(merged), bg='white')
+# clean up column names before writing
+colnames(merged) <- c('City', 'Sample', 'Lineage', 'Abundance', 'State', 'Latitude', 'Longitude', 'Address', 'Location_total', 'Other')
+write.csv(subset(merged, select=c('Sample', 'Lineage', 'Abundance', 'Location_total', 'Address', 'Other')), 'metadata_merged_demix_result.csv')
+

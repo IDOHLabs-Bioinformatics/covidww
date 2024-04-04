@@ -121,11 +121,12 @@ workflow COVIDWW {
     //
     // MODULE: Plot results on a state map
     //
-
-    MAP_PLOT (
-        FREYJA_CLEAN.out.csv,
-        ch_metadata
-    )
+    if (params.metadata) {
+        MAP_PLOT (
+            FREYJA_CLEAN.out.csv,
+            ch_metadata
+        )
+    }
 
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first(),FASTP.out.versions.first(), BWAMEM2_INDEX.out.versions.first(), BWAMEM2_MEM.out.versions.first())

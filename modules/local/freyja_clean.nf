@@ -6,7 +6,7 @@ process FREYJA_CLEAN {
     path("*")
 
     output:
-    path("*.csv"),        emit: csv
+    path "*.csv",         emit: csv
     path "versions.yml",  emit: versions
 
     when:

@@ -119,7 +119,6 @@ def parsing():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', type=str, required=True, help='The directory' +
                                                                        'containing the Freyja results.')
-    parser.add_argument('-o', '--output', type=str, help='Optional output name.')
 
     return parser.parse_args()
 
@@ -137,8 +136,5 @@ if __name__ == '__main__':
             row = [key, lineages[k], abundances[k]]
             frame.loc[len(frame)] = row
 
-    if args.output:
-        frame.to_csv(args.output, index=False)
-    else:
-        handle = 'wastewater_analysis_' + str(date.today()) + '.csv'
-        frame.to_csv('wastewater_analysis.csv', index=False)
+    handle = 'wastewater_analysis_' + str(date.today()) + '.csv'
+    frame.to_csv('wastewater_analysis.csv', index=False)

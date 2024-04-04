@@ -3,21 +3,24 @@ process MAP_PLOT {
     label "process_low"
 
     input:
-    path(deconvolution)
-    path(metadata)
+    path deconvolution
+    path metadata
+    val size
 
     output:
-    path("*.png"),        emit: plot
-    path("versions.yml"), emit: versions
+    path "*.png",                             emit: plot
+    path "metadata_merged_demix_result.csv",  emit: dataframe
+    path "versions.yml",                      emit: versions
 
     when:
-    !(metadata.ifEmpty())
+    task.ext.when == null || task.ext.when
 
     script:
     """
     Rscript ${projectDir}/bin/map.R \\
         ${deconvolution} \\
-        ${metadata}
+        ${metadata} \\
+        ${size}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -6,7 +6,7 @@ library(tidygeocoder)
 theme_set(theme_void())
 args <- commandArgs(T)
 
-make_map <- function(frame) {
+make_map <- function(frame, size) {
   # set largely distinct colors
   n <- length(unique(frame$Lineage)) - 1
   qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
@@ -17,7 +17,7 @@ make_map <- function(frame) {
   # pivot to the proper format for scatterpie
   tmp <- frame %>% pivot_wider(names_from = Lineage, values_from = x)
   # set a radius
-  tmp$radius <- .15
+  tmp$radius <- size
 
   # collect labels used for plotting
   columns <- colnames(tmp)
@@ -54,6 +54,7 @@ make_bar <- function(frame) {
 # read the files
 input <- args[1]
 metadata <- args[2]
+size <- as.numeric(args[3])
 results <- read.csv(input, sep=',')
 metadata <- read.csv(metadata, sep=',')
 
@@ -89,7 +90,7 @@ if (sum(merged$other == TRUE) > 0) {
 }
 
 title <- paste('abundance_map_', Sys.Date())
-ggsave(paste0(title, '.png'), make_map(merged), bg='white')
+ggsave(paste0(title, '.png'), make_map(merged, size), bg='white')
 title <- paste('abundance_bar_', Sys.Date())
 ggsave(paste0(title, '.png'), make_bar(merged), bg='white')
 # clean up column names before writing

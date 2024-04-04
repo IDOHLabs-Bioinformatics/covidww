@@ -124,7 +124,8 @@ workflow COVIDWW {
     if (params.metadata) {
         MAP_PLOT (
             FREYJA_CLEAN.out.csv,
-            ch_metadata
+            ch_metadata,
+            params.radius
         )
     }
 

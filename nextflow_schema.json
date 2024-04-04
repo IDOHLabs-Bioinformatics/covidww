@@ -95,7 +95,14 @@
                 "sort_bam": {
                     "type": "boolean",
                     "description": "Sort the bam file after mapping.",
-                    "help_text": "Use this parameter to have samtools sort the bam file from alignment before continuing processing."
+                    "help_text": "Use this parameter to have samtools sort the bam file from alignment before continuing processing.",
+                    "default": true
+                },
+                "radius": {
+                    "type": "number",
+                    "description": "Set the radius of pie charts",
+                    "help_text": "This value is the radius of the pie charts in the abundance_map plot. Default is 15.",
+                    "default": 0.15
                 }
             }
         },

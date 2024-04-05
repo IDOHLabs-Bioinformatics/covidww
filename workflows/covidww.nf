@@ -4,22 +4,24 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { FASTP              } from '../modules/nf-core/fastp/main'
-include { BWAMEM2_INDEX		 } from '../modules/nf-core/bwamem2/index/main'
-include { BWAMEM2_MEM		 } from '../modules/nf-core/bwamem2/mem/main'
-include { SAMTOOLS_INDEX     } from '../modules/nf-core/samtools/index'
-include { IVAR_TRIM          } from '../modules/local/ivar/main'
-include { SAMTOOLS_SORT      } from '../modules/nf-core/samtools/sort'
-include { FREYJA_VARIANTS    } from '../modules/nf-core/freyja/variants/main'
-include { FREYJA_DEMIX       } from '../modules/local/freyja/demix/main'
-include { FREYJA_CLEAN       } from '../modules/local/freyja_clean'
-include { MAP_PLOT           } from '../modules/local/map_plot'
-include { paramsSummaryMap       } from 'plugin/nf-validation'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_covidww_pipeline'
+include { FASTQC                       } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                      } from '../modules/nf-core/multiqc/main'
+include { FASTP                        } from '../modules/nf-core/fastp/main'
+include { BWAMEM2_INDEX		           } from '../modules/nf-core/bwamem2/index/main'
+include { BWAMEM2_MEM		           } from '../modules/nf-core/bwamem2/mem/main'
+include { SAMTOOLS_INDEX as INDEX1     } from '../modules/nf-core/samtools/index'
+include { IVAR_TRIM                    } from '../modules/local/ivar/main'
+include { SAMTOOLS_SORT                } from '../modules/nf-core/samtools/sort'
+include { SAMTOOLS_INDEX as INDEX2     } from '../modules/nf-core/samtools/index'
+include { SAMTOOLS_STATS               } from '../modules/nf-core/samtools/stats'
+include { FREYJA_VARIANTS              } from '../modules/nf-core/freyja/variants/main'
+include { FREYJA_DEMIX                 } from '../modules/local/freyja/demix/main'
+include { FREYJA_CLEAN                 } from '../modules/local/freyja_clean'
+include { MAP_PLOT                     } from '../modules/local/map_plot'
+include { paramsSummaryMap             } from 'plugin/nf-validation'
+include { paramsSummaryMultiqc         } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML       } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText       } from '../subworkflows/local/utils_nfcore_covidww_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,7 +79,7 @@ workflow COVIDWW {
     //
     // MODULE: Index the bam file
     //
-    SAMTOOLS_INDEX (
+    INDEX1 (
         BWAMEM2_MEM.out.bam
     )
 
@@ -85,8 +87,7 @@ workflow COVIDWW {
     // MODULE: trim primers with iVar
     //
     IVAR_TRIM (
-        SAMTOOLS_INDEX.out.bai,
-        BWAMEM2_MEM.out.bam,
+        BWAMEM2_MEM.out.bam.join(INDEX1.out.bai),
         ch_primers.first()
     )
 
@@ -95,6 +96,21 @@ workflow COVIDWW {
     //
     SAMTOOLS_SORT (
         IVAR_TRIM.out.bam,
+        Channel.of('reference_genome').combine(ch_reference).first()
+    )
+
+    //
+    // MODULE: Index after primer trimming
+    //
+    INDEX2 (
+        SAMTOOLS_SORT.out.bam
+    )
+
+    //
+    // MODULE: Samtools stats
+    //
+    SAMTOOLS_STATS(
+        IVAR_TRIM.out.bam.join(INDEX2.out.bai),
         Channel.of('reference_genome').combine(ch_reference).first()
     )
 

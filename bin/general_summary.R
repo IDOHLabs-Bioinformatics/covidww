@@ -15,6 +15,7 @@ ggplot(totals, aes(x='', y=x, fill=Group.1)) +
   geom_bar(stat='identity', width=1) +
   coord_polar('y', start=0) +
   theme_void() +
-  geom_text(aes(label=paste0(x, '%')), position=position_stack(vjust=0.5))
+  geom_text(aes(label=paste0(x, '%')), position=position_stack(vjust=0.5)) +
+  scale_fill_discrete(name='Lineage')
 
 ggsave('overall_lineage_presence.png', bg='white')

@@ -1,6 +1,6 @@
 process SAMTOOLS_INDEX {
     tag "$meta.id"
-    label "process_low"
+    label 'process_low'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -8,11 +8,13 @@ process SAMTOOLS_INDEX {
         'biocontainers/samtools:1.19.2--h50ea8bc_0' }"
 
     input:
-    tuple val(meta), path(bam)
+    tuple val(meta), path(input)
 
     output:
-    tuple val(meta), path(bam), path("*.bai"), emit: bai
-    path "versions.yml"                      , emit: versions
+    tuple val(meta), path("*.bai") , optional:true, emit: bai
+    tuple val(meta), path("*.csi") , optional:true, emit: csi
+    tuple val(meta), path("*.crai"), optional:true, emit: crai
+    path  "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -20,10 +22,11 @@ process SAMTOOLS_INDEX {
     script:
     def args = task.ext.args ?: ''
     """
-    samtools index \\
-        ${args} \\
-        -@ ${task.cpus} \\
-        ${bam}
+    samtools \\
+        index \\
+        -@ ${task.cpus-1} \\
+        $args \\
+        $input
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -32,9 +35,10 @@ process SAMTOOLS_INDEX {
     """
 
     stub:
-    def prefix              = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}.bai
+    touch ${input}.bai
+    touch ${input}.crai
+    touch ${input}.csi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -9,9 +9,9 @@ include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { FASTP              } from '../modules/nf-core/fastp/main'
 include { BWAMEM2_INDEX		 } from '../modules/nf-core/bwamem2/index/main'
 include { BWAMEM2_MEM		 } from '../modules/nf-core/bwamem2/mem/main'
-include { SAMTOOLS_INDEX     } from '../modules/local/samtools/index/main'
+include { SAMTOOLS_INDEX     } from '../modules/nf-core/samtools/index'
 include { IVAR_TRIM          } from '../modules/local/ivar/main'
-include { SAMTOOLS_SORT      } from '../modules/local/samtools/sort/main'
+include { SAMTOOLS_SORT      } from '../modules/nf-core/samtools/sort'
 include { FREYJA_VARIANTS    } from '../modules/nf-core/freyja/variants/main'
 include { FREYJA_DEMIX       } from '../modules/local/freyja/demix/main'
 include { FREYJA_CLEAN       } from '../modules/local/freyja_clean'
@@ -86,15 +86,17 @@ workflow COVIDWW {
     //
     IVAR_TRIM (
         SAMTOOLS_INDEX.out.bai,
+        BWAMEM2_MEM.out.bam,
         ch_primers.first()
     )
 
     //
     // MODULE: samtools sort
     //
-    SAMTOOLS_SORT {
-        IVAR_TRIM.out.bam
-    }
+    SAMTOOLS_SORT (
+        IVAR_TRIM.out.bam,
+        Channel.of('reference_genome').combine(ch_reference).first()
+    )
 
     //
     // MODULE: Freyja find variants

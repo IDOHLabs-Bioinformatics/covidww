@@ -16,6 +16,7 @@ include { SAMTOOLS_STATS               } from '../modules/nf-core/samtools/stats
 include { FREYJA_VARIANTS              } from '../modules/nf-core/freyja/variants/main'
 include { FREYJA_DEMIX                 } from '../modules/local/freyja/demix/main'
 include { FREYJA_CLEAN                 } from '../modules/local/freyja_clean'
+include {GENERAL_SUMMARY               } from '../modules/local/general_summary'
 include { MAP_PLOT                     } from '../modules/local/map_plot'
 include { paramsSummaryMap             } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc         } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -126,6 +127,13 @@ workflow COVIDWW {
     //
     FREYJA_CLEAN (
         FREYJA_DEMIX.out.demix.collect()
+    )
+
+    //
+    // MODULE: General summary pie chart
+    //
+    GENERAL_SUMMARY (
+        FREYJA_CLEAN.out.csv
     )
 
     //

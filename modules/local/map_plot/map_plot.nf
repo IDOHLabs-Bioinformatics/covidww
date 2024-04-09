@@ -2,6 +2,9 @@ process MAP_PLOT {
     tag "plot_all"
     label "process_low"
 
+    conda "${moduleDir}/environment.yml"
+
+
     input:
     path deconvolution
     path metadata
@@ -9,7 +12,7 @@ process MAP_PLOT {
 
     output:
     path "*.png",                             emit: plot
-    path "metadata_merged_demix_result.csv",  emit: dataframe
+    path "metadata_merged_demix_result*",  emit: dataframe
     path "versions.yml",                      emit: versions
 
     when:

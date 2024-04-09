@@ -2,6 +2,8 @@ process FREYJA_CLEAN {
     tag "parse_all"
     label "process_low"
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     path("*")
 

@@ -2,18 +2,21 @@ process GENERAL_SUMMARY {
     tag "general_summary"
     label "process_low"
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     path deconvolution
 
     output:
-    path "*.png",     emit: general_summary
+    path "*.png",        emit: general_summary
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     """
-    Rscript ${projectDir}/bin/general_summary.R \
+    Rscript ${projectDir}/bin/general_summary.R \\
         ${deconvolution}
 
     cat <<-END_VERSIONS > versions.yml

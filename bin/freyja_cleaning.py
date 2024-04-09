@@ -137,4 +137,4 @@ if __name__ == '__main__':
             frame.loc[len(frame)] = row
 
     handle = 'wastewater_analysis_' + str(date.today()) + '.csv'
-    frame.to_csv('wastewater_analysis.csv', index=False)
+    frame.to_csv(handle, index=False)

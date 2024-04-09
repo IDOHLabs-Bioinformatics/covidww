@@ -17,5 +17,5 @@ ggplot(totals, aes(x='', y=x, fill=Group.1)) +
   theme_void() +
   geom_text(aes(label=paste0(x, '%')), position=position_stack(vjust=0.5)) +
   scale_fill_discrete(name='Lineage')
-
-ggsave('overall_lineage_presence.png', bg='white')
+title <- paste0('overall_lineage_presence', Sys.Date(), '.png')
+ggsave(title, bg='white')

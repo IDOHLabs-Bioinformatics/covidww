@@ -73,6 +73,12 @@
                     "description": "A comma separated file containing metadata",
                     "help": "A comma separated file containing the columns Sample, City, State, Latitude, and Longitude that is used to plot the data to a state map."
                 },
+                "intermediate": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Save the intermediate files",
+                    "help": "Set this to true if you wish to save the intermediate files. Default is false"
+                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",

@@ -71,7 +71,7 @@
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.csv$",
                     "description": "A comma separated file containing metadata",
-                    "help": "A comma separated file containing the columns Sample, City, State, Latitude, and Longitude that is used to plot the data to a state map."
+                    "help": "A comma separated file containing the columns Sample, City, and State that is used to plot the data to a state map."
                 },
                 "intermediate": {
                     "type": "boolean",

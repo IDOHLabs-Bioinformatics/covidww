@@ -148,11 +148,18 @@ workflow COVIDWW {
     }
 
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}, SAMTOOLS_STATS.out.stats.collect{it[1]})
-    ch_versions = ch_versions.mix(FASTQC.out.versions,FASTP.out.versions, BWAMEM2_INDEX.out.versions,
+    if (params.metadata == '') {
+        ch_versions = ch_versions.mix(FASTQC.out.versions,FASTP.out.versions, BWAMEM2_INDEX.out.versions,
+                                  BWAMEM2_MEM.out.versions, INDEX1.out.versions, SAMTOOLS_STATS.out.versions,
+                                  IVAR_TRIM.out.versions, SAMTOOLS_SORT.out.versions, FREYJA_VARIANTS.out.versions,
+                                  FREYJA_DEMIX.out.versions, FREYJA_CLEAN.out.versions, GENERAL_SUMMARY.out.versions)
+    } else {
+        ch_versions = ch_versions.mix(FASTQC.out.versions,FASTP.out.versions, BWAMEM2_INDEX.out.versions,
                                   BWAMEM2_MEM.out.versions, INDEX1.out.versions, SAMTOOLS_STATS.out.versions,
                                   IVAR_TRIM.out.versions, SAMTOOLS_SORT.out.versions, FREYJA_VARIANTS.out.versions,
                                   FREYJA_DEMIX.out.versions, FREYJA_CLEAN.out.versions, GENERAL_SUMMARY.out.versions,
                                   MAP_PLOT.out.versions)
+    }
 
     //
     // Collate and save software versions

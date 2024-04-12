@@ -8,7 +8,7 @@ process GENERAL_SUMMARY {
     path deconvolution
 
     output:
-    path "*.png",        emit: general_summary
+    path "*.pdf",        emit: general_summary
     path "versions.yml", emit: versions
 
     when:

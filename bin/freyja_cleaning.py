@@ -37,33 +37,35 @@ def collapsing(pango, proportion):
     """
     # initialize variables
     down_lineages = ['.'.join(x.split('.')[:-1]) for x in pango]
+    matrix = np.zeros([len(pango), len(pango)])
+    used = set()
+    collapsed = {}
 
-    joined_lineages = {}
     for i in range(len(down_lineages)):
-        # initialize variables for each row
-        match1 = []
-        match2_i = []
-        match2_j = []
-        # perform comparisons
+        row_matches = set()
         for j in range(len(down_lineages)):
-            if down_lineages[i] == down_lineages[j]:
-                match1.append(j)
-            elif down_lineages[i] == pango[j]:
-                match2_i.append(i)
-                match2_j.append(j)
-        # sum and add lineage based upon the row result
-        if len(match1) > 1 and len(match2_j) > 0:
-            both = sum([proportion[x] for x in match1]) + sum([proportion[x] for x in match2_j])
-            joined_lineages[pango[match2_j[0]]] = both
-        elif len(match1) > 1:
-            joined_lineages[down_lineages[match1[0]]] = sum([proportion[x] for x in match1])
-        elif len(match2_j) > 0:
-            both = sum([proportion[x] for x in match2_i]) + sum([proportion[x] for x in match2_j])
-            joined_lineages[pango[match2_j[0]]] = both
-        else:
-            joined_lineages[pango[match1[0]]] = proportion[match1[0]]
+            if j in used:
+                continue
+            else:
+                if i == j:
+                    matrix[i, j] = 1
+                    row_matches.add(j)
+                    used.add(j)
+                elif pango[i] == down_lineages[j]:
+                    matrix[i, j] = 1
+                    row_matches.add(j)
+                    used.add(j)
+                elif down_lineages[i] == pango[j]:
+                    matrix[i, j] = 1
+                    row_matches.add(j)
+                    used.add(j)
+                elif down_lineages[i] == down_lineages[j]:
+                    matrix[i, j] = 1
+                    row_matches.add(j)
+                    used.add(j)
 
-    return [list(joined_lineages.keys()), list(joined_lineages.values())]
+        if row_matches:
+            collapsed[pango[i]] = (sum([proportion[x] for x in row_matches]))
 
 
 def freyja_results(freyja_results_directory):

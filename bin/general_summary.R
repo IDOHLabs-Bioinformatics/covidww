@@ -1,3 +1,7 @@
+if (system.file(package='ggpubr') == '') {
+  install.packages('ggpubr', version='0.6.0', repos='http://cran.us.r-project.org')
+}
+
 library(ggplot2)
 library(ggpubr)
 args <- commandArgs(T)
@@ -7,7 +11,7 @@ overall_pie <- function(frame) {
   # aggregate totals
   frame <- aggregate(frame$Abundance, by=list(frame$Lineage), FUN=sum)
   frame$ratio <- round(frame$x / sum(frame$x), 4) * 100
-  frame$Group.1 <- ifelse(frame$ratio > 5, frame$Group.1, 'Other')
+  frame$Group.1 <- ifelse(frame$ratio > 10, frame$Group.1, 'Other')
   frame <- aggregate(frame$ratio, by=list(frame$Group.1), FUN=sum)
   
   # generate plot
@@ -23,7 +27,7 @@ overall_pie <- function(frame) {
 individual <- function(sample, frame) {
   frame <- subset(frame, frame$Sample == sample)
   frame$ratio <- round(frame$Abundance / sum(frame$Abundance), 4) * 100
-  frame$Lineage <- ifelse(frame$ratio > 5, frame$Lineage, 'Other')
+  frame$Lineage <- ifelse(frame$ratio > 10, frame$Lineage, 'Other')
   frame <- aggregate(frame$ratio, by=list(frame$Lineage), FUN=sum)
   
   ggplot(frame, aes(x='', y=x, fill=Group.1)) +
@@ -49,10 +53,16 @@ results <- results[order(results$Sample),]
 samples <- unique(results$Sample)
 individaual_plots <- lapply(samples, individual, results)
 
-rows <- round((length(individaual_plots) + 1) / 2, 0)
+plot_count <- round(length(individaual_plots) + 1)
+if (plot_count > 6) {
+  rows <- 3
+}else{
+  rows <- round(plot_count / 2, 0)
+}
+
 plot <- ggarrange(overall, plotlist=individaual_plots, ncol=2, nrow=rows)
 
 title <- paste0('demix_summary_', Sys.Date(), '.pdf')
-ggsave(title, plot)
+ggexport(plot, filename=title)
 
 

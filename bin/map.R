@@ -98,7 +98,7 @@ results <- merge(results, totals, by.x='Group.2', by.y='Group.1')
 colnames(results) <- c('address', 'lineage', 'state','abundance', 'city_total')
 
 # set those with a low frequency as other
-results$other <- ifelse(results$abundance / results$city_total <= .05, TRUE, FALSE)
+results$other <- ifelse(results$abundance / results$city_total <= .10, TRUE, FALSE)
 
 if (sum(results$other == TRUE) > 0) {
   others <- subset(results, results$other == TRUE)

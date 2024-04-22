@@ -1,0 +1,2 @@
+sample,fastq_1,fastq_2
+test1,https://raw.githubusercontent.com/IDOHLabs-Bioinformatics/covidww/dev/example/test01_R1.fq.gz,https://raw.githubusercontent.com/IDOHLabs-Bioinformatics/covidww/dev/example/test01_R2.fq.gz

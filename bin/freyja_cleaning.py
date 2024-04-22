@@ -68,6 +68,8 @@ def collapsing(pango, proportion):
         if row_matches:
             collapsed[pango[i]] = (sum([proportion[x] for x in row_matches]))
 
+    return [list(collapsed.keys()), list(collapsed.values())]
+
 
 def freyja_results(freyja_results_directory):
     """

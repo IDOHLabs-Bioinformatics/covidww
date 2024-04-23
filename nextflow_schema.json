@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/covidww/master/nextflow_schema.json",
-    "title": "nf-core/covidww pipeline parameters",
-    "description": "Quantification of SARS-CoV-2 variants within wastewater samples.",
+    "$id": "https://github.com/IDOHLabs-Bioinformatics/covidww/blob/dev/nextflow_schema.json",
+    "title": "covidww pipeline parameters",
+    "description": "Quantification of SARS-CoV-2 lineages within wastewater samples.",
     "type": "object",
     "definitions": {
         "input_output_options": {

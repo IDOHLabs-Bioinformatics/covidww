@@ -1,12 +1,8 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/covidww
+    covidww
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/covidww
-    Website: https://nf-co.re/covidww
-    Slack  : https://nfcore.slack.com/channels/covidww
-----------------------------------------------------------------------------------------
 */
 
 nextflow.enable.dsl = 2
@@ -30,7 +26,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_covi
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_COVIDWW {
+workflow LAUNCH_COVIDWW {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -86,7 +82,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_COVIDWW (
+    LAUNCH_COVIDWW (
         PIPELINE_INITIALISATION.out.samplesheet,
         PIPELINE_INITIALISATION.out.reference,
         PIPELINE_INITIALISATION.out.adapters,
@@ -104,7 +100,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_COVIDWW.out.multiqc_report
+        LAUNCH_COVIDWW.out.multiqc_report
     )
 }
 

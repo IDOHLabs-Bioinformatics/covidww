@@ -1,5 +1,5 @@
 //
-// Subworkflow with utility functions specific to the nf-core pipeline template
+// Subworkflow with utility functions
 //
 
 import org.yaml.snakeyaml.Yaml
@@ -56,7 +56,7 @@ def checkProfileProvided(nextflow_cli_args) {
             "HINT: A common mistake is to provide multiple values separated by spaces e.g. `-profile test, docker`.\n"
     }
     if (nextflow_cli_args[0]) {
-        log.warn "nf-core pipelines do not accept positional arguments. The positional argument `${nextflow_cli_args[0]}` has been detected.\n" +
+        log.warn "This pipeline does not accept positional arguments. The positional argument `${nextflow_cli_args[0]}` has been detected.\n" +
             "HINT: A common mistake is to provide multiple values separated by spaces e.g. `-profile test, docker`.\n"
     }
 }
@@ -67,11 +67,11 @@ def checkProfileProvided(nextflow_cli_args) {
 def workflowCitation() {
     return "If you use ${workflow.manifest.name} for your analysis please cite:\n\n" +
         "* The pipeline\n" +
-        "  ${workflow.manifest.doi}\n\n" +
+        "  https://github.com/IDOHLabs-Bioinformatics/covidww\n" +
         "* The nf-core framework\n" +
         "  https://doi.org/10.1038/s41587-020-0439-x\n\n" +
         "* Software dependencies\n" +
-        "  https://github.com/${workflow.manifest.name}/blob/master/CITATIONS.md"
+        "  https://github.com/IDOHLabs-Bioinformatics/covidww/blob/dev/CITATIONS.md"
 }
 
 //
@@ -152,19 +152,20 @@ def paramsSummaryMultiqc(summary_params) {
 }
 
 //
-// nf-core logo
+// logo
 //
-def nfCoreLogo(monochrome_logs=true) {
+def logo(monochrome_logs=true) {
     Map colors = logColours(monochrome_logs)
     String.format(
         """\n
         ${dashedLine(monochrome_logs)}
-                                                ${colors.green},--.${colors.black}/${colors.green},-.${colors.reset}
-        ${colors.blue}        ___     __   __   __   ___     ${colors.green}/,-._.--~\'${colors.reset}
-        ${colors.blue}  |\\ | |__  __ /  ` /  \\ |__) |__         ${colors.yellow}}  {${colors.reset}
-        ${colors.blue}  | \\| |       \\__, \\__/ |  \\ |___     ${colors.green}\\`-._,-`-,${colors.reset}
-                                                ${colors.green}`._,._,\'${colors.reset}
-        ${colors.purple}  ${workflow.manifest.name} ${getWorkflowVersion()}${colors.reset}
+        ${colors.blue}    ▒▒                      ${colors.green}_     _                          ${colors.blue}▒▒${colors.reset}
+        ${colors.blue}   ░▒▒▓                    ${colors.green}(_)   | |                        ${colors.blue}▓▒▒░${colors.reset}
+        ${colors.blue}  ░▒▒▒▒▒      ${colors.green}___ _____   ___    | |_      ____      __    ${colors.blue}▒▒▒▒▒░${colors.reset}
+        ${colors.blue} ░▒▒▒▒▒▒▓    ${colors.green}/ __/ _ \\ \\ / / |/ _` \\ \\ /\\ / /\\ \\ /\\ / /   ${colors.blue}▓▒▒▒▒▒▒░${colors.reset}
+        ${colors.blue}▒▒▒  ▒▓▓▓█  ${colors.green}| (_| (_) \\ V /| | (_| |\\ V  V /  \\ V  V /   ${colors.blue}█▓▓▓▒  ▒▒▒${colors.reset}
+        ${colors.blue} ▒▒▒▓▓▓▓█    ${colors.green}\\___\\___/ \\_/ |_|\\__,_| \\_/\\_/    \\_/\\_/     ${colors.blue}█▓▓▓▓▒▒▒${colors.reset}
+        ${colors.blue}   ▓▓▓█                                                     ${colors.blue}█▓▓▓${colors.reset}
         ${dashedLine(monochrome_logs)}
         """.stripIndent()
     )

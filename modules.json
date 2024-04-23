@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/covidww",
-    "homePage": "https://github.com/nf-core/covidww",
+    "name": "covidww",
+    "homePage": "https://github.com/IDOHLabs-Bioinformatics/covidww",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

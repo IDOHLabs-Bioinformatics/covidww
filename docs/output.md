@@ -1,4 +1,4 @@
-# nf-core/covidww: Output
+# covidww: Output
 
 ## Introduction
 
@@ -6,13 +6,19 @@ This document describes the output produced by the pipeline. Most of the plots a
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
-<!-- TODO nf-core: Write this documentation describing your workflow's output -->
-
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [FastQC](#fastqc) - Raw read QC
+- [FASTP](#fastp) - Quality and adapter trimming
+- [BWA-mem2](#bwa-mem2) - Alignment
+- [samtools stats](#samtools) - Alignment QC
+- [iVar](#iVar) - Primer trimming
+- [Freyja](#Freyja) - Variant calling and lineage demixing
+- [Freyja clean](#Freyja clean) - Clean Freyja results
+- [Summary](#Summary) - Demixing summary
+- [Map plot](#Map plot) - Visualize with location metadata
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -39,6 +45,115 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
 :::
 
+### FastP
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `fastp/`
+  - `*fastp.fastq.gz`: Trimmed reads
+  - `*.json`: json file of the QC
+  - `*.html`: html file with the QC report
+  - `*.log`: log report of Fastp
+  - `*.fail.fastq.gz`: reads failing QC *optional*
+  - `*.merged.fastq.gz`: merged reads *optional*
+
+</details>
+
+[Fastp](https://github.com/OpenGene/fastp) is designed to perform all necessary preprocessing of FastQ in an ultra-fast manner. It performs quality profiling, filters out bad reads, cuts low quality bases, trims reads in front and tail, cuts adapters, corrects mismatches in overlapped paired end reads, and visualizes quality control and reports it in a json format for further interpreting.
+Example output json and html files are in the [example](../example) directory.
+
+### BWA-mem2
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `BWA-mem2/`
+  - `*.bam`: Read alignment in bam format
+
+</details>
+
+[BWA-mem2](https://github.com/bwa-mem2/bwa-mem2) performs read alignment to the SARS-CoV-2 reference genome.
+
+### Samtools
+<details markdown="1">
+<summary>Output files</summary>
+
+- `samtools/`
+  - `*.stats`: Read alignment in bam format
+
+</details>
+
+[Samtools](https://www.htslib.org/) provides many useful functions throughout this pipeline, indexing alignment and sorting alignment files as well as providing alignment QC. The samtools alignment QC adds percent reads mapped and many alignment stats to the MultiQC report.
+
+### iVar
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `ivar/`
+  - `*.bam`: Read alignment with primers trimmed in bam format
+  - `*.log`: Log file of trimming process
+
+</details>
+
+[iVar](https://andersen-lab.github.io/ivar/html/index.html) trims the primers used to generate amplicons from the reads so that only the sequence data from the samples is analyzed, and not the also the primers
+
+### Freyja
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `freyja/`
+  - `*.variants.tsv`: Tab separated file of variants
+  - `*.depth.tsv`: Tab separated file of read depths per base
+  - `*demix.txt`: Text file containing the demix results
+
+</details>
+
+[Freyja](https://github.com/andersen-lab/Freyja/tree/main/freyja) generates variant calls and read depths in an initial step. Once those are generated, it is able to calculate the relative abundances of lineages within the sample. 
+
+
+### Freyja clean
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `freyja/`
+  - `*.csv`: Tab separated file of variants
+
+</details>
+
+This process runs a Python script to parse the demixing results from Freyja and collapses very similar lineages together as during testing with simulated reads it was noticed that lineages similar to the result were called as well as the result that summed up to the proper lineage abundance.
+
+
+### Summary
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `summary/`
+  - `*.pdf`: Visualization of the demix results
+
+</details>
+
+Summary creates pie charts of the demixing results for the samples.
+
+### Map Plot
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `map_plot/`
+  - `*.png`: Plot of the demix results on a map
+  - `metadata_merged_demix*.csv`: File with the data used for the map to see what was filtered out for readability
+
+</details>
+
+Map plot runs if metadata containing the Sample, City, and State is provided and it will plot the demixing results on the map to visualize the outcome spatially.
+
+
+
 ### MultiQC
 
 <details markdown="1">
@@ -51,7 +166,7 @@ The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They m
 
 </details>
 
-[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
+[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report.
 
 Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQC. The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability. For more information about how to use MultiQC reports, see <http://multiqc.info>.
 

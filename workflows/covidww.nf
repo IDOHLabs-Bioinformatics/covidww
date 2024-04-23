@@ -18,7 +18,7 @@ include { FREYJA_DEMIX                 } from '../modules/local/freyja/demix/mai
 include { FREYJA_CLEAN                 } from '../modules/local/clean/freyja_clean'
 include {GENERAL_SUMMARY               } from '../modules/local/summary/general_summary'
 include { MAP_PLOT                     } from '../modules/local/map_plot/map_plot'
-include { paramsSummaryMap             } from 'plugin/nf-validation'
+include { paramsSummaryMap             } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc         } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML       } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText       } from '../subworkflows/local/utils_nfcore_covidww_pipeline'

@@ -69,7 +69,7 @@ workflow {
         params.version,
         params.help,
         params.validate_params,
-        params.monochrome_logs,
+        params.monochromeLogs,
         args,
         params.outdir,
         params.input,
@@ -98,7 +98,7 @@ workflow {
         params.email_on_fail,
         params.plaintext_email,
         params.outdir,
-        params.monochrome_logs,
+        params.monochromeLogs,
         params.hook_url,
         LAUNCH_COVIDWW.out.multiqc_report
     )

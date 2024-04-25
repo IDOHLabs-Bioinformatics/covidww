@@ -161,7 +161,7 @@ def logo(monochrome_logs=true) {
         ${dashedLine(monochrome_logs)}
         ${colors.blue}    ▒▒                      ${colors.green}_     _                          ${colors.blue}▒▒${colors.reset}
         ${colors.blue}   ░▒▒▓                    ${colors.green}(_)   | |                        ${colors.blue}▓▒▒░${colors.reset}
-        ${colors.blue}  ░▒▒▒▒▒      ${colors.green}___ _____   ___    | |_      ____      __    ${colors.blue}▒▒▒▒▒░${colors.reset}
+        ${colors.blue}  ░▒▒▒▒▒      ${colors.green}___ _____   ___  __| |_      ____      __    ${colors.blue}▒▒▒▒▒░${colors.reset}
         ${colors.blue} ░▒▒▒▒▒▒▓    ${colors.green}/ __/ _ \\ \\ / / |/ _` \\ \\ /\\ / /\\ \\ /\\ / /   ${colors.blue}▓▒▒▒▒▒▒░${colors.reset}
         ${colors.blue}▒▒▒  ▒▓▓▓█  ${colors.green}| (_| (_) \\ V /| | (_| |\\ V  V /  \\ V  V /   ${colors.blue}█▓▓▓▒  ▒▒▒${colors.reset}
         ${colors.blue} ▒▒▒▓▓▓▓█    ${colors.green}\\___\\___/ \\_/ |_|\\__,_| \\_/\\_/    \\_/\\_/     ${colors.blue}█▓▓▓▓▒▒▒${colors.reset}

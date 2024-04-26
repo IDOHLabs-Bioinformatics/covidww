@@ -1,3 +1,5 @@
+![logo](docs/images/covidww_logo.png)
+
 ## Introduction
 
 **covidww** is a bioinformatics pipeline built with nextflow following the nf-core template that is designed to analyze
@@ -19,8 +21,9 @@ as well as a detailed QC report.
 9. Variant Calling ([`Freyja`](https://github.com/andersen-lab/Freyja/tree/main/freyja))
 10. Demixing ([`Freyja`](https://github.com/andersen-lab/Freyja/tree/main/freyja))
 11. Demix cleaning
-12. Result plotting
-13. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+12. Summary plotting
+13. Map plotting
+14. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Usage
 
@@ -56,8 +59,8 @@ After cloning this repository, now you can run the pipeline using:
 nextflow run covidww \
    -profile <docker/conda/singularity> \
    --input samplesheet.csv \
-   --primers <primers.bed> \
-   --outdir <OUTDIR>
+   --primers [primers.bed] \
+   --outdir [OUTDIR]
 ```
 
 And can optionally include the metadata by adding the metadata parameter:
@@ -66,12 +69,12 @@ And can optionally include the metadata by adding the metadata parameter:
 nextflow run covidww \
    -profile <docker/conda/singularity> \
    --input samplesheet.csv \
-   --primers <primers.bed> \
+   --primers [primers.bed] \
    --metadata metadata.csv \
-   --outdir <OUTDIR>
+   --outdir [OUTDIR]
 ```
 
-## covidww parameters
+## Additional covidww parameters
 ```--intermediate True``` will save all the intermediate files
 
 ```--adapter_fasta [file]``` tells Fastp to look for these additional adapters to trim

@@ -1,20 +1,3 @@
-# check if all required packages are present, install if not
-if (system.file(package='ggplot2') == '') {
-  install.packages('ggplot2', version='3.4.4', repos='http://cran.us.r-project.org')
-}
-if (system.file(package='scatterpie') == '') {
-  install.packages('scatterpie', version='0.2.1', repos='http://cran.us.r-project.org')
-}
-if (system.file(package='RColorBrewer') == '') {
-  install.packages('RColorBrewer', version='1.1.3', repos='http://cran.us.r-project.org')
-}
-if (system.file(package='tidygeocoder') == '') {
-  install.packages('tidygeocoder', version='1.0.5', repos='http://cran.us.r-project.org')
-}
-if (system.file(package='maps') == '') {
-  install.packages('maps', version='3.4.2', repos='http://cran.us.r-project.org')
-}
-
 # load the packages
 library(ggplot2)
 library(scatterpie)
@@ -75,6 +58,7 @@ make_bar <- function(frame) {
 # read the files
 input <- args[1]
 metadata <- args[2]
+
 size <- as.numeric(args[3])
 results <- read.csv(input, sep=',')
 metadata <- read.csv(metadata, sep=',')

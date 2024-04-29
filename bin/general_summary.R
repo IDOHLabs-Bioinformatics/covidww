@@ -1,11 +1,6 @@
-if (system.file(package='ggpubr') == '') {
-  install.packages('ggpubr', version='0.6.0', repos='http://cran.us.r-project.org')
-}
-
 library(ggplot2)
 library(ggpubr)
 args <- commandArgs(T)
-theme_set(theme_bw())
 
 overall_pie <- function(frame) {
   # aggregate totals
@@ -51,18 +46,16 @@ results <- results[order(results$Sample),]
 
 # individual plots
 samples <- unique(results$Sample)
-individaual_plots <- lapply(samples, individual, results)
+individual_plots <- lapply(samples, individual, results)
 
-plot_count <- round(length(individaual_plots) + 1)
+plot_count <- round(length(individual_plots) + 1)
 if (plot_count > 6) {
   rows <- 3
 }else{
   rows <- round(plot_count / 2, 0)
 }
 
-plot <- ggarrange(overall, plotlist=individaual_plots, ncol=2, nrow=rows)
+plot <- ggarrange(overall, plotlist=individual_plots, ncol=2, nrow=rows)
 
 title <- paste0('demix_summary_', Sys.Date(), '.pdf')
 ggexport(plot, filename=title)
-
-

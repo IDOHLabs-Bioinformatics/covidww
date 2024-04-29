@@ -9,14 +9,14 @@ include { MULTIQC                      } from '../modules/nf-core/multiqc/main'
 include { FASTP                        } from '../modules/nf-core/fastp/main'
 include { BWAMEM2_INDEX		           } from '../modules/nf-core/bwamem2/index/main'
 include { BWAMEM2_MEM		           } from '../modules/nf-core/bwamem2/mem/main'
-include { SAMTOOLS_INDEX as INDEX1     } from '../modules/nf-core/samtools/index'
+include { SAMTOOLS_INDEX               } from '../modules/nf-core/samtools/index'
 include { IVAR_TRIM                    } from '../modules/local/ivar/main'
 include { SAMTOOLS_SORT                } from '../modules/nf-core/samtools/sort'
 include { SAMTOOLS_STATS               } from '../modules/nf-core/samtools/stats'
 include { FREYJA_VARIANTS              } from '../modules/nf-core/freyja/variants/main'
 include { FREYJA_DEMIX                 } from '../modules/local/freyja/demix/main'
 include { FREYJA_CLEAN                 } from '../modules/local/clean/freyja_clean'
-include {GENERAL_SUMMARY               } from '../modules/local/summary/general_summary'
+include { SUMMARY                      } from '../modules/local/summary/summary'
 include { MAP_PLOT                     } from '../modules/local/map_plot/map_plot'
 include { paramsSummaryMap             } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc         } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -79,7 +79,7 @@ workflow COVIDWW {
     //
     // MODULE: Index the bam file
     //
-    INDEX1 (
+    SAMTOOLS_INDEX (
         BWAMEM2_MEM.out.bam
     )
 
@@ -87,7 +87,7 @@ workflow COVIDWW {
     // MODULE: Samtools stats
     //
     SAMTOOLS_STATS(
-        BWAMEM2_MEM.out.bam.join(INDEX1.out.bai),
+        BWAMEM2_MEM.out.bam.join(SAMTOOLS_INDEX.out.bai),
         Channel.of('reference_genome').combine(ch_reference).first()
     )
 
@@ -95,7 +95,7 @@ workflow COVIDWW {
     // MODULE: trim primers with iVar
     //
     IVAR_TRIM (
-        BWAMEM2_MEM.out.bam.join(INDEX1.out.bai),
+        BWAMEM2_MEM.out.bam.join(SAMTOOLS_INDEX.out.bai),
         ch_primers.first()
     )
 
@@ -130,9 +130,9 @@ workflow COVIDWW {
     )
 
     //
-    // MODULE: General summary pie chart
+    // MODULE: summary pie chart
     //
-    GENERAL_SUMMARY (
+    SUMMARY (
         FREYJA_CLEAN.out.csv
     )
 
@@ -150,14 +150,14 @@ workflow COVIDWW {
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}, FASTP.out.json.collect{it[1]}, SAMTOOLS_STATS.out.stats.collect{it[1]})
     if (params.metadata == '') {
         ch_versions = ch_versions.mix(FASTQC.out.versions,FASTP.out.versions, BWAMEM2_INDEX.out.versions,
-                                  BWAMEM2_MEM.out.versions, INDEX1.out.versions, SAMTOOLS_STATS.out.versions,
+                                  BWAMEM2_MEM.out.versions, SAMTOOLS_INDEX.out.versions, SAMTOOLS_STATS.out.versions,
                                   IVAR_TRIM.out.versions, SAMTOOLS_SORT.out.versions, FREYJA_VARIANTS.out.versions,
-                                  FREYJA_DEMIX.out.versions, FREYJA_CLEAN.out.versions, GENERAL_SUMMARY.out.versions)
+                                  FREYJA_DEMIX.out.versions, FREYJA_CLEAN.out.versions, SUMMARY.out.versions)
     } else {
         ch_versions = ch_versions.mix(FASTQC.out.versions,FASTP.out.versions, BWAMEM2_INDEX.out.versions,
-                                  BWAMEM2_MEM.out.versions, INDEX1.out.versions, SAMTOOLS_STATS.out.versions,
+                                  BWAMEM2_MEM.out.versions, SAMTOOLS_INDEX.out.versions, SAMTOOLS_STATS.out.versions,
                                   IVAR_TRIM.out.versions, SAMTOOLS_SORT.out.versions, FREYJA_VARIANTS.out.versions,
-                                  FREYJA_DEMIX.out.versions, FREYJA_CLEAN.out.versions, GENERAL_SUMMARY.out.versions,
+                                  FREYJA_DEMIX.out.versions, FREYJA_CLEAN.out.versions, SUMMARY.out.versions,
                                   MAP_PLOT.out.versions)
     }
 
@@ -165,7 +165,7 @@ workflow COVIDWW {
     // Collate and save software versions
     //
     softwareVersionsToYAML(ch_versions)
-        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_pipeline_software_mqc_versions.yml', sort: true, newLine: true)
+        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'covidww_software_mqc_versions.yml', sort: true, newLine: true)
         .set { ch_collated_versions }
 
     //

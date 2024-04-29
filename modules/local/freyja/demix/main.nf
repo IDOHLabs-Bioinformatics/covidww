@@ -2,7 +2,11 @@ process FREYJA_DEMIX {
     tag "${meta.id}"
     label "process_medium"
 
-    conda "${moduleDir}/environment.yml"
+    if (workflow.profile == 'conda') {
+        conda "${moduleDir}/environment.yml"
+    } else {
+        conda null
+    }
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/freyja:1.4.7--pyhdfd78af_0':
         'biocontainers/freyja:1.4.7--pyhdfd78af_0' }"

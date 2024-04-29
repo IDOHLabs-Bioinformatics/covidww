@@ -3,7 +3,7 @@ process MAP_PLOT {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"
-
+    container null
 
     input:
     path deconvolution

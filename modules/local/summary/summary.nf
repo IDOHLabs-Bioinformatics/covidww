@@ -1,8 +1,9 @@
-process GENERAL_SUMMARY {
+process SUMMARY {
     tag "general_summary"
     label "process_low"
 
     conda "${moduleDir}/environment.yml"
+    container null
 
     input:
     path deconvolution

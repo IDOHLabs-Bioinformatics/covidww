@@ -2,7 +2,11 @@ process FASTP {
     tag "$meta.id"
     label 'process_medium'
 
-    conda "${moduleDir}/environment.yml"
+    if (workflow.profile == 'conda') {
+        conda "${moduleDir}/environment.yml"
+    } else {
+        conda null
+    }
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/fastp:0.23.4--h5f740d0_0' :
         'biocontainers/fastp:0.23.4--h5f740d0_0' }"

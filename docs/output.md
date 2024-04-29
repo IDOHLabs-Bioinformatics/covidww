@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
-
-The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
+This document describes the output produced by the pipeline.
+The directories listed below will be created in the results directory after the pipeline has finished. All paths are
+relative to the top-level ```OUTDIR``` directory.
 
 ## Pipeline overview
 
@@ -33,7 +33,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 </details>
 
-[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
+[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score 
+distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. 
+For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
 
 ![MultiQC - FastQC sequence counts plot](images/mqc_fastqc_counts.png)
 
@@ -42,7 +44,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 ![MultiQC - FastQC adapter content plot](images/mqc_fastqc_adapter.png)
 
 :::note
-The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and 
+potentially regions with low quality.
 :::
 
 ### FastP
@@ -60,8 +63,11 @@ The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They m
 
 </details>
 
-[Fastp](https://github.com/OpenGene/fastp) is designed to perform all necessary preprocessing of FastQ in an ultra-fast manner. It performs quality profiling, filters out bad reads, cuts low quality bases, trims reads in front and tail, cuts adapters, corrects mismatches in overlapped paired end reads, and visualizes quality control and reports it in a json format for further interpreting.
-Example output json and html files are in the [example](../example) directory.
+[Fastp](https://github.com/OpenGene/fastp) is designed to perform all necessary preprocessing of FastQ in an ultra-fast manner. It performs quality 
+profiling, filters out bad reads, cuts low quality bases, trims reads in front and tail, cuts adapters, corrects
+mismatches in overlapped paired end reads, and visualizes quality control and reports it in a json format for further
+interpreting.
+
 
 ### BWA-mem2
 
@@ -70,6 +76,7 @@ Example output json and html files are in the [example](../example) directory.
 
 - `BWA-mem2/`
   - `*.bam`: Read alignment in bam format
+  - `bwamem2/*`: Index of reference genome
 
 </details>
 
@@ -81,10 +88,13 @@ Example output json and html files are in the [example](../example) directory.
 
 - `samtools/`
   - `*.stats`: Read alignment in bam format
+  - `*.bam`: Sorted bam files
+  - `*.bai`: bam index files
 
 </details>
 
-[Samtools](https://www.htslib.org/) provides many useful functions throughout this pipeline, indexing alignment and sorting alignment files as well as providing alignment QC. The samtools alignment QC adds percent reads mapped and many alignment stats to the MultiQC report.
+[Samtools](https://www.htslib.org/) provides useful functions throughout this pipeline, indexing and sorting alignment and providing
+alignment QC. The samtools alignment QC adds percent reads mapped and many alignment stats to the MultiQC report.
 
 ### iVar
 
@@ -92,12 +102,13 @@ Example output json and html files are in the [example](../example) directory.
 <summary>Output files</summary>
 
 - `ivar/`
-  - `*.bam`: Read alignment with primers trimmed in bam format
+  - `*trimmed.bam`: Read alignment with primers trimmed in bam format
   - `*.log`: Log file of trimming process
 
 </details>
 
-[iVar](https://andersen-lab.github.io/ivar/html/index.html) trims the primers used to generate amplicons from the reads so that only the sequence data from the samples is analyzed, and not the also the primers
+[iVar](https://andersen-lab.github.io/ivar/html/index.html) trims the primers used to generate amplicons from the reads so that only the sequence data from the samples 
+is analyzed, and not the primers
 
 ### Freyja
 
@@ -108,23 +119,12 @@ Example output json and html files are in the [example](../example) directory.
   - `*.variants.tsv`: Tab separated file of variants
   - `*.depth.tsv`: Tab separated file of read depths per base
   - `*demix.txt`: Text file containing the demix results
+  - `wastewater_analysis_<run date>.csv`: Lineage deconvolution results
 
 </details>
 
-[Freyja](https://github.com/andersen-lab/Freyja/tree/main/freyja) generates variant calls and read depths in an initial step. Once those are generated, it is able to calculate the relative abundances of lineages within the sample. 
-
-
-### Freyja clean
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `freyja/`
-  - `*.csv`: Tab separated file of variants
-
-</details>
-
-This process runs a Python script to parse the demixing results from Freyja and collapses very similar lineages together as during testing with simulated reads it was noticed that lineages similar to the result were called as well as the result that summed up to the proper lineage abundance.
+[Freyja](https://github.com/andersen-lab/Freyja/tree/main/freyja) generates variant calls and read depths in an initial step. Once those are generated, it is able to 
+calculate the relative abundances of lineages within the sample. 
 
 
 ### Summary
@@ -144,13 +144,16 @@ Summary creates pie charts of the demixing results for the samples.
 <details markdown="1">
 <summary>Output files</summary>
 
-- `map_plot/`
-  - `*.png`: Plot of the demix results on a map
+- `map/`
+  - `abundance_bar_<run date>.png`: Plot of the demix results on a map
+  - `abundance_map_<run data>.png`: Bar plot of the detected variants per city
   - `metadata_merged_demix*.csv`: File with the data used for the map to see what was filtered out for readability
 
 </details>
 
-Map plot runs if metadata containing the Sample, City, and State is provided and it will plot the demixing results on the map to visualize the outcome spatially.
+Map plot runs if metadata containing the Sample, City, and State is provided, and it will plot the demixing results on
+the map to visualize the outcome spatially. It also generates a bar plot showing the lineage abundance per city to view
+in more detail.
 
 
 
@@ -166,9 +169,12 @@ Map plot runs if metadata containing the Sample, City, and State is provided and
 
 </details>
 
-[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report.
+[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project. 
+Most of the pipeline QC results are visualised in the report.
 
-Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQC. The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability. For more information about how to use MultiQC reports, see <http://multiqc.info>.
+Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQC. The pipeline has special steps which 
+also allow the software versions to be reported in the MultiQC output for future traceability. For more information 
+about how to use MultiQC reports, see <http://multiqc.info>.
 
 ### Pipeline information
 
@@ -177,10 +183,13 @@ Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQ
 
 - `pipeline_info/`
   - Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
-  - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
+  - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameters are used when running the pipeline.
   - Reformatted samplesheet files used as input to the pipeline: `samplesheet.valid.csv`.
   - Parameters used by the pipeline run: `params.json`.
 
 </details>
 
-[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
+
+[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution 
+of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with
+other information such as launch commands, run times and resource usage.

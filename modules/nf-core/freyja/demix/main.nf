@@ -3,7 +3,7 @@ process FREYJA_DEMIX {
     label 'process_low'
 
 
-    if (workflow.profile == 'conda') {
+    if (workflow.profile.contains('conda')) {
         conda "${moduleDir}/environment.yml"
     } else {
         conda null

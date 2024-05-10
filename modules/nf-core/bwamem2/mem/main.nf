@@ -2,7 +2,7 @@ process BWAMEM2_MEM {
     tag "$meta.id"
     label 'process_high'
 
-    if (workflow.profile == 'conda') {
+    if (workflow.profile.contains('conda')) {
         conda "${moduleDir}/environment.yml"
     } else {
         conda null

@@ -2,7 +2,7 @@ process FREYJA_DEMIX {
     tag "${meta.id}"
     label "process_medium"
 
-    if (workflow.profile == 'conda') {
+    if (workflow.profile.contains('conda')) {
         conda "${moduleDir}/environment.yml"
     } else {
         conda null

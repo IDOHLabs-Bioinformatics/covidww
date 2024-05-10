@@ -2,7 +2,7 @@ process FREYJA_CLEAN {
     tag "parse_all"
     label "process_low"
 
-    if (workflow.profile == 'conda') {
+    if (workflow.profile.contains('conda')) {
         conda "${moduleDir}/environment.yml"
     } else {
         conda null

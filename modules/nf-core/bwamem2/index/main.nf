@@ -2,7 +2,7 @@ process BWAMEM2_INDEX {
     tag "$fasta"
     label 'process_single'
 
-    if (workflow.profile == 'conda') {
+    if (workflow.profile.contains('conda')) {
         conda "${moduleDir}/environment.yml"
     } else {
         conda null

@@ -1,5 +1,5 @@
 process SUMMARY {
-    tag "general_summary"
+    tag "summary"
     label "process_low"
 
     conda "${moduleDir}/environment.yml"
@@ -9,7 +9,7 @@ process SUMMARY {
     path deconvolution
 
     output:
-    path "*.pdf",        emit: general_summary
+    path "*.pdf",        emit: summary
     path "versions.yml", emit: versions
 
     when:
@@ -17,7 +17,7 @@ process SUMMARY {
 
     script:
     """
-    Rscript ${projectDir}/bin/general_summary.R \\
+    Rscript ${projectDir}/bin/summary.R \\
         ${deconvolution}
 
     cat <<-END_VERSIONS > versions.yml

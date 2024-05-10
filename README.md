@@ -2,10 +2,10 @@
 
 ## Introduction
 
-**covidww** is a bioinformatics pipeline built with nextflow following the nf-core template that is designed to analyze
-sequencing of SARS-CoV-2 in wastewater samples and determine the relative abundance of the SARS-CoV-2 lineages within
-the samples. It takes FASTQ files, primers in a BED file, a reference sequence (NC_045512.2 by default), and optional
-metadata as input to perform quality control (QC), trimming, alignment, deconvolution, and produces demixing reports and 
+**covidww** is a bioinformatics pipeline, built with nextflow following the nf-core template, that is designed to
+determine the relative abundance of the SARS-CoV-2 lineages within wastewater samples. It takes FASTQ files, primers in 
+a BED file, a reference sequence (NC_045512.2 by default), and optional metadata as input to perform quality control 
+(QC), trimming, alignment, deconvolution, and produces demixing reports and 
 visualizations as well as a detailed QC report.
 
 ![covidww tube map](docs/images/covidww.png)
@@ -77,6 +77,17 @@ nextflow run covidww \
    --metadata metadata.csv \
    --outdir [OUTDIR]
 ```
+
+
+Using the profile test or test_full will start a small run to ensure everything is working properly. It uses input from
+[`example`](example) and the output of those tests are also available.
+
+```bash
+nextflow run covidww \
+  - profile <test/test_full>,<singularity/docker/conda>
+  --outdir [OUTDIR]
+```
+
 
 ## Additional covidww parameters
 ```--intermediate True``` will save all the intermediate files

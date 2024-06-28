@@ -66,8 +66,6 @@ metadata <- read.csv(metadata, sep=',')
 metadata$address <- paste(metadata$State, metadata$City, sep=',')
 # metadata <- geocode(metadata, address)
 
-# filter down the results
-results <- subset(results, results$Abundance >= .05)
 
 # merge the metadata and results
 results <- merge(results, subset(metadata, select=c('Sample', 'address', 'State')),

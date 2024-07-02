@@ -109,6 +109,12 @@
                     "description": "Set the radius of pie charts",
                     "help_text": "This value is the radius of the pie charts in the abundance_map plot. Default is 15.",
                     "default": 0.15
+                },
+                "primer_ratio": {
+                    "type": "number",
+                    "description": "Proportion of primers needed to be picked up to be considered a quality sample.",
+                    "help_text": "This is the threshold for the proportion of primers captured for the sample to be considered high quality. Default is 0.65",
+                    "default": 0.65
                 }
             }
         },

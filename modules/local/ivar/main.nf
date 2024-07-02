@@ -16,9 +16,9 @@ process IVAR_TRIM {
     path bed
 
     output:
-    tuple val(meta), path("*.bam"),             emit: bam
-    path "*.log",                              emit: log
-    path "versions.yml",                       emit: versions
+    tuple val(meta), path("*.bam"), emit: bam
+    tuple val(meta), path "*.log",  emit: log
+    path "versions.yml",            emit: versions
 
     when:
     task.ext.when == null || task.ext.when

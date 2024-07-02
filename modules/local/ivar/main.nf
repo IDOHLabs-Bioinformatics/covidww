@@ -17,7 +17,7 @@ process IVAR_TRIM {
 
     output:
     tuple val(meta), path("*.bam"), emit: bam
-    tuple val(meta), path "*.log",  emit: log
+    tuple val(meta), path("*.log"), emit: log
     path "versions.yml",            emit: versions
 
     when:
@@ -31,8 +31,9 @@ process IVAR_TRIM {
         -i $bam \\
         -b $bed \\
         -p ${prefix}_trimmed \\
+        -m 80 \\
         ${args} \\
-        2> ${prefix}.log
+        2>  ${prefix}.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

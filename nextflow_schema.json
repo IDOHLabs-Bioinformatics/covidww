@@ -115,6 +115,11 @@
                     "description": "Proportion of primers needed to be picked up to be considered a quality sample.",
                     "help_text": "This is the threshold for the proportion of primers captured for the sample to be considered high quality. Default is 0.65",
                     "default": 0.65
+                },
+                "subsampled_reads": {
+                    "type": "number",
+                    "description": "Number of reads to subsample down to.",
+                    "default": 1000000
                 }
             }
         },

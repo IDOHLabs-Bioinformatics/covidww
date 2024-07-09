@@ -119,8 +119,9 @@ workflow COVIDWW {
 
     // filter primer check by the threshold parameter
     PRIMER_CHECK.out.ratio.filter{it[1].toFloat() >= 0.30}.set{ filtered } // MAKE A PARAMETER FOR FILTER VALUE
+    PRIMER_CHECK.out.ratio.filter{it[1].toFloat() < 0.30}.set{ fail_filter }
 
-    // join channels
+    // collect samples that passed the primer check
     filtered.join(IVAR_TRIM.out.bam)
         .multiMap{ it ->
             meta: it[0]
@@ -128,6 +129,16 @@ workflow COVIDWW {
         .set { joined }
     joined.meta.merge(joined.path)
         .set { passed }
+
+    // collect samples that failed primer check
+    fail_filter.join(IVAR_TRIM.out.bam)
+        .multiMap{ it ->
+            meta: it[0]
+            path: it[2]}
+        .set { joined }
+    joined.meta.merge(joined.path)
+        .set { failed }
+
 
     //
     // MODULE: samtools sort

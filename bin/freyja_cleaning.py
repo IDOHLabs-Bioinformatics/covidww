@@ -98,15 +98,23 @@ def freyja_results(freyja_results_directory):
     # write all the results to a dictionary with the samples as the key and the
     # information as a list of lists in the value
     for result in os.listdir(freyja_results_directory):
-        if result[0] != '.':  # ignore the nextflow files
+        if result[0] != '.':  # ignore the hidden files
             with open(os.path.join(freyja_results_directory, result)) as file:
+                lineages = []
+                abundances = []
                 lines = file.readlines()
                 name = lines[0].strip().split('.variants.tsv')[0]
                 tmp_lineages = lines[2].strip().split('\t')[1].split(' ')
                 str_abundances = lines[3].strip().split('\t')[1].split(' ')
                 tmp_abundances = [float(x) for x in str_abundances]
 
-                results[name] = collapsing(tmp_lineages, tmp_abundances)
+                # filter out results less than 10%
+                for i in range(len(tmp_abundances)):
+                    if tmp_abundances[i] >= 0.1:
+                        lineages.append(tmp_lineages[i])
+                        abundances.append(tmp_abundances[i])
+
+                results[name] = [lineages, abundances]
 
     return results
 
@@ -135,10 +143,10 @@ if __name__ == '__main__':
 
     # write the final results to a file
     for key, value in report.items():
-        lineages = report[key][0]
-        abundances = report[key][1]
-        for k in range(len(lineages)):
-            row = [key, lineages[k], abundances[k]]
+        lineage = report[key][0]
+        abundance = report[key][1]
+        for k in range(len(lineage)):
+            row = [key, lineage[k], abundance[k]]
             frame.loc[len(frame)] = row
 
     handle = 'wastewater_analysis_' + str(date.today()) + '.csv'

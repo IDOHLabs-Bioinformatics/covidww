@@ -13,6 +13,7 @@ include { BWAMEM2_MEM		           } from '../modules/nf-core/bwamem2/mem/main'
 include { SAMTOOLS_INDEX               } from '../modules/nf-core/samtools/index'
 include { IVAR_TRIM                    } from '../modules/local/ivar/main'
 include { PRIMER_CHECK                 } from '../modules/local/clean/primer_check.nf'
+include { WRITE_FAILED                 } from '../modules/local/write_failed.nf'
 include { SAMTOOLS_SORT                } from '../modules/nf-core/samtools/sort'
 include { SAMTOOLS_STATS               } from '../modules/nf-core/samtools/stats'
 include { FREYJA_VARIANTS              } from '../modules/nf-core/freyja/variants/main'
@@ -139,6 +140,13 @@ workflow COVIDWW {
     joined.meta.merge(joined.path)
         .set { failed }
 
+
+    //
+    // MODULE: write failed
+    //
+    WRITE_FAILED (
+        failed
+    )
 
     //
     // MODULE: samtools sort

@@ -4,7 +4,6 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { FASTQC                       } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                      } from '../modules/nf-core/multiqc/main'
 include { SUBSAMPLE                    } from '../modules/local/seqtk/subsample'
 include { FASTP                        } from '../modules/nf-core/fastp/main'
@@ -45,13 +44,6 @@ workflow COVIDWW {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
-
-    //
-    // MODULE: Run FastQC
-    //
-    FASTQC (
-        ch_samplesheet
-    )
 
     //
     // MODULE: Run BWAmem2 index
@@ -196,14 +188,14 @@ workflow COVIDWW {
         )
     }
 
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}, FASTP.out.json.collect{it[1]}, SAMTOOLS_STATS.out.stats.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.json.collect{it[1]}, SAMTOOLS_STATS.out.stats.collect{it[1]})
     if (params.metadata == '') {
-        ch_versions = ch_versions.mix(FASTQC.out.versions,FASTP.out.versions, BWAMEM2_INDEX.out.versions,
+        ch_versions = ch_versions.mix(FASTP.out.versions, BWAMEM2_INDEX.out.versions,
                                   BWAMEM2_MEM.out.versions, SAMTOOLS_INDEX.out.versions, SAMTOOLS_STATS.out.versions,
                                   IVAR_TRIM.out.versions, SAMTOOLS_SORT.out.versions, FREYJA_VARIANTS.out.versions,
                                   FREYJA_DEMIX.out.versions, FREYJA_CLEAN.out.versions, SUMMARY.out.versions)
     } else {
-        ch_versions = ch_versions.mix(FASTQC.out.versions,FASTP.out.versions, BWAMEM2_INDEX.out.versions,
+        ch_versions = ch_versions.mix(FASTP.out.versions, BWAMEM2_INDEX.out.versions,
                                   BWAMEM2_MEM.out.versions, SAMTOOLS_INDEX.out.versions, SAMTOOLS_STATS.out.versions,
                                   IVAR_TRIM.out.versions, SAMTOOLS_SORT.out.versions, FREYJA_VARIANTS.out.versions,
                                   FREYJA_DEMIX.out.versions, FREYJA_CLEAN.out.versions, SUMMARY.out.versions,

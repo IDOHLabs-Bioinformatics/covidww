@@ -6,6 +6,7 @@
 
 include { FASTQC                       } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                      } from '../modules/nf-core/multiqc/main'
+include { SUBSAMPLE                    } from '../modules/local/seqtk/subsample'
 include { FASTP                        } from '../modules/nf-core/fastp/main'
 include { BWAMEM2_INDEX		           } from '../modules/nf-core/bwamem2/index/main'
 include { BWAMEM2_MEM		           } from '../modules/nf-core/bwamem2/mem/main'
@@ -58,10 +59,18 @@ workflow COVIDWW {
     )
 
     //
+    // MODULE: Run Seqtk
+    //
+    SUBSAMPLE(
+        ch_samplesheet,
+        params.subsampled_reads
+    )
+
+    //
     // MODULE: Run Fastp
     //
     FASTP (
-        ch_samplesheet,
+        SUBSAMPLE.out.subsampled,
         ch_adapters.first(),
         params.save_trim_fail,
         params.save_merged

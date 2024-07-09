@@ -119,8 +119,8 @@ workflow COVIDWW {
     )
 
     // filter primer check by the threshold parameter
-    PRIMER_CHECK.out.ratio.filter{it[1].toFloat() >= 0.30}.set{ filtered } // MAKE A PARAMETER FOR FILTER VALUE
-    PRIMER_CHECK.out.ratio.filter{it[1].toFloat() < 0.30}.set{ fail_filter }
+    PRIMER_CHECK.out.ratio.filter{it[1].toFloat() >= params.primer_ratio}.set{ filtered }
+    PRIMER_CHECK.out.ratio.filter{it[1].toFloat() < params.primer_ratio}.set{ fail_filter }
 
     // collect samples that passed the primer check
     filtered.join(IVAR_TRIM.out.bam)

@@ -12,6 +12,7 @@ include { BWAMEM2_INDEX		           } from '../modules/nf-core/bwamem2/index/mai
 include { BWAMEM2_MEM		           } from '../modules/nf-core/bwamem2/mem/main'
 include { SAMTOOLS_INDEX               } from '../modules/nf-core/samtools/index'
 include { IVAR_TRIM                    } from '../modules/local/ivar/main'
+include { PRIMER_CHECK                 } from '../modules/local/clean/primer_check.nf'
 include { SAMTOOLS_SORT                } from '../modules/nf-core/samtools/sort'
 include { SAMTOOLS_STATS               } from '../modules/nf-core/samtools/stats'
 include { FREYJA_VARIANTS              } from '../modules/nf-core/freyja/variants/main'
@@ -109,10 +110,30 @@ workflow COVIDWW {
     )
 
     //
+    // MODULE: primer check
+    //
+    PRIMER_CHECK (
+        IVAR_TRIM.out.log,
+        ch_primers.first()
+    )
+
+    // filter primer check by the threshold parameter
+    PRIMER_CHECK.out.ratio.filter{it[1].toFloat() >= 0.30}.set{ filtered } // MAKE A PARAMETER FOR FILTER VALUE
+
+    // join channels
+    filtered.join(IVAR_TRIM.out.bam)
+        .multiMap{ it ->
+            meta: it[0]
+            path: it[2]}
+        .set { joined }
+    joined.meta.merge(joined.path)
+        .set { passed }
+
+    //
     // MODULE: samtools sort
     //
     SAMTOOLS_SORT (
-        IVAR_TRIM.out.bam,
+        passed,
         Channel.of('reference_genome').combine(ch_reference).first()
     )
 

@@ -8,8 +8,8 @@ process FREYJA_DEMIX {
         conda null
     }
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/freyja:1.4.7--pyhdfd78af_0':
-        'biocontainers/freyja:1.4.7--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/freyja:1.5.1--pyhdfd78af_1':
+        'biocontainers/freyja:1.5.1--pyhdfd78af_1' }"
 
     input:
     tuple val(meta), path(variants), path(depths)

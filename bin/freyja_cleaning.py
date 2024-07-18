@@ -108,9 +108,9 @@ def freyja_results(freyja_results_directory):
                 str_abundances = lines[3].strip().split('\t')[1].split(' ')
                 tmp_abundances = [float(x) for x in str_abundances]
 
-                # filter out results less than 10%
+                # filter out results less than 5%
                 for i in range(len(tmp_abundances)):
-                    if tmp_abundances[i] >= 0.1:
+                    if tmp_abundances[i] >= 0.05:
                         lineages.append(tmp_lineages[i])
                         abundances.append(tmp_abundances[i])
 

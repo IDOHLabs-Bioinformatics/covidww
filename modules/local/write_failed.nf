@@ -1,9 +1,9 @@
 process WRITE_FAILED {
-    tag "${meta.id}"
+    tag "primer_content_failed"
     label "process_single"
 
     input:
-    tuple val(meta), path(bam)
+    val(samples)
 
     output:
     path("primer_failed.csv"), emit: failed
@@ -12,13 +12,17 @@ process WRITE_FAILED {
     task.ext.when == null || task.ext.when
 
     script:
-    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    echo ${prefix} >> primer_failed.csv
+    cleaned=\$(echo ${samples} | sed 's/\\[//g' | sed 's/\\]//g' | sed 's/,//g' )
+    for variable in \$cleaned; do
+      echo \$variable >> primer_failed.csv
+    done
+
+
     """
 
     stub:
     """
-    touch failed.csv
+    touch primer_failed.csv
     """
 }

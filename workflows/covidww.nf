@@ -111,8 +111,13 @@ workflow COVIDWW {
     )
 
     // filter primer check by the threshold parameter
-    PRIMER_CHECK.out.ratio.filter{it[1].toFloat() >= params.primer_ratio}.set{ filtered }
-    PRIMER_CHECK.out.ratio.filter{it[1].toFloat() < params.primer_ratio}.set{ fail_filter }
+    PRIMER_CHECK.out.ratio.filter{it[1]
+        .toFloat() >= params.primer_ratio}
+        .set{ filtered } // this is the meta and ratio
+    PRIMER_CHECK.out.ratio.filter{it[1]
+        .toFloat() < params.primer_ratio}
+        .map{ it[0].id }
+        .set{ failed }
 
     // collect samples that passed the primer check
     filtered.join(IVAR_TRIM.out.bam)
@@ -124,20 +129,21 @@ workflow COVIDWW {
         .set { passed }
 
     // collect samples that failed primer check
-    fail_filter.join(IVAR_TRIM.out.bam)
+    /* fail_filter.join(IVAR_TRIM.out.bam)
         .multiMap{ it ->
             meta: it[0]
             path: it[2]}
         .set { joined }
     joined.meta.merge(joined.path)
-        .set { failed }
+        .set { failed } // this is meta and path */
 
-
+    // println(failed[0])
+    // println(failed[0].collect())
     //
     // MODULE: write failed
     //
     WRITE_FAILED (
-        failed
+        failed.collect()
     )
 
     //

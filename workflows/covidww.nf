@@ -12,7 +12,7 @@ include { BWAMEM2_MEM		           } from '../modules/nf-core/bwamem2/mem/main'
 include { SAMTOOLS_INDEX               } from '../modules/nf-core/samtools/index'
 include { IVAR_TRIM                    } from '../modules/local/ivar/main'
 include { PRIMER_CHECK                 } from '../modules/local/clean/primer_check.nf'
-include { WRITE_FAILED                 } from '../modules/local/write_failed.nf'
+include { PRIMER_USAGE                 } from '../modules/local/primer_usage.nf'
 include { SAMTOOLS_SORT                } from '../modules/nf-core/samtools/sort'
 include { SAMTOOLS_STATS               } from '../modules/nf-core/samtools/stats'
 include { FREYJA_VARIANTS              } from '../modules/nf-core/freyja/variants/main'
@@ -114,10 +114,6 @@ workflow COVIDWW {
     PRIMER_CHECK.out.ratio.filter{it[1]
         .toFloat() >= params.primer_ratio}
         .set{ filtered } // this is the meta and ratio
-    PRIMER_CHECK.out.ratio.filter{it[1]
-        .toFloat() < params.primer_ratio}
-        .map{ it[0].id }
-        .set{ failed }
 
     // collect samples that passed the primer check
     filtered.join(IVAR_TRIM.out.bam)
@@ -131,8 +127,8 @@ workflow COVIDWW {
     //
     // MODULE: write failed
     //
-    WRITE_FAILED (
-        failed.collect()
+    PRIMER_USAGE (
+        PRIMER_CHECK.out.ratio.collect()
     )
 
     //

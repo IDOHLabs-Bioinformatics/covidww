@@ -34,7 +34,7 @@ process SUBSAMPLE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        ivar: \$(echo \$(seqtk) |& head -n 3 | tail -n 1 | cut -d ' ' -f 2)
+        seqtk: \$(seqtk |& head -n 3 | tail -n 1 | cut -d ' ' -f 2)
     END_VERSIONS
     """
 
@@ -47,7 +47,7 @@ process SUBSAMPLE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        ivar: \$(echo \$(seqtk) |& head -n 3 | tail -n 1 | cut -d ' ' -f 2)
+        seqtk: \$(seqtk |& head -n 3 | tail -n 1 | cut -d ' ' -f 2)
     END_VERSIONS
     """
 

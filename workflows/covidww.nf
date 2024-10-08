@@ -128,17 +128,6 @@ workflow COVIDWW {
     joined.meta.merge(joined.path)
         .set { passed }
 
-    // collect samples that failed primer check
-    /* fail_filter.join(IVAR_TRIM.out.bam)
-        .multiMap{ it ->
-            meta: it[0]
-            path: it[2]}
-        .set { joined }
-    joined.meta.merge(joined.path)
-        .set { failed } // this is meta and path */
-
-    // println(failed[0])
-    // println(failed[0].collect())
     //
     // MODULE: write failed
     //

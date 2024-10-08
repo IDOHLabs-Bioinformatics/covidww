@@ -158,7 +158,7 @@ def logo(monochrome_logs=true) {
     Map colors = logColours(monochrome_logs)
     String.format(
         """\n
-        ${dashedLine(monochrome_logs)}
+        --------------------------------------------------------------------
         ${colors.blue}    ▒▒                      ${colors.green}_     _                          ${colors.blue}▒▒${colors.reset}
         ${colors.blue}   ░▒▒▓                    ${colors.green}(_)   | |                        ${colors.blue}▓▒▒░${colors.reset}
         ${colors.blue}  ░▒▒▒▒▒      ${colors.green}___ _____   ___  __| |_      ____      __    ${colors.blue}▒▒▒▒▒░${colors.reset}
@@ -166,7 +166,7 @@ def logo(monochrome_logs=true) {
         ${colors.blue}▒▒▒  ▒▓▓▓█  ${colors.green}| (_| (_) \\ V /| | (_| |\\ V  V /  \\ V  V /   ${colors.blue}█▓▓▓▒  ▒▒▒${colors.reset}
         ${colors.blue} ▒▒▒▓▓▓▓█    ${colors.green}\\___\\___/ \\_/ |_|\\__,_| \\_/\\_/    \\_/\\_/     ${colors.blue}█▓▓▓▓▒▒▒${colors.reset}
         ${colors.blue}   ▓▓▓█                                                     ${colors.blue}█▓▓▓${colors.reset}
-        ${dashedLine(monochrome_logs)}
+        --------------------------------------------------------------------
         """.stripIndent()
     )
 }

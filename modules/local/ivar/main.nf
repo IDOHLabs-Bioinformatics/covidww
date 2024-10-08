@@ -46,6 +46,7 @@ process IVAR_TRIM {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_trimmed.bam
+    touch ${prefix}.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

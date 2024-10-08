@@ -28,7 +28,7 @@ process SUMMARY {
 
     stub:
     """
-    touch empty.png
+    touch empty.pdf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

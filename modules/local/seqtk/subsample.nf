@@ -39,6 +39,8 @@ process SUBSAMPLE {
     """
 
     stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_subsampled_R1.fastq.gz
     touch ${prefix}_subsampled_R2.fastq.gz

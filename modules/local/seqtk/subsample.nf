@@ -8,8 +8,8 @@ process SUBSAMPLE {
         conda null
     }
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/seqtk:1.4--he4a0461_2' :
-        'biocontainers/seqtk:1.4--he4a0461_2' }"
+        'https://depot.galaxyproject.org/singularity/mulled-v2-b8f6f9860663fb4ab74531715c96bb5f4fe84284:c0bd71897f9383127c88ddaa39ef2a259985c28a-0' :
+        'quay.io/biocontainers/mulled-v2-b8f6f9860663fb4ab74531715c96bb5f4fe84284:c0bd71897f9383127c88ddaa39ef2a259985c28a-0' }"
 
     input:
     tuple val(meta), path(reads)
@@ -26,7 +26,6 @@ process SUBSAMPLE {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    RANDOM=\$(date +%s%N | cut -b10-19)
     seed=\$(echo \$RANDOM)
 
     seqtk sample -s \$seed ${reads[0]} ${count} | pigz > ${prefix}_subsampled_R1.fastq.gz

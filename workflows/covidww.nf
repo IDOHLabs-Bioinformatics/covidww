@@ -10,10 +10,13 @@ include { FASTP                        } from '../modules/nf-core/fastp/main'
 include { BWAMEM2_INDEX		           } from '../modules/nf-core/bwamem2/index/main'
 include { BWAMEM2_MEM		           } from '../modules/nf-core/bwamem2/mem/main'
 include { SAMTOOLS_INDEX               } from '../modules/nf-core/samtools/index'
+include { SAMTOOLS_FIXMATE             } from '../modules/nf-core/samtools/fixmate'
+include { SAMTOOLS_SORT as SORT_1      } from '../modules/nf-core/samtools/sort'
+include { SAMTOOLS_MARKDUP             } from '../modules/nf-core/samtools/markdup'
 include { IVAR_TRIM                    } from '../modules/local/ivar/main'
 include { PRIMER_CHECK                 } from '../modules/local/clean/primer_check.nf'
 include { PRIMER_USAGE                 } from '../modules/local/primer_usage.nf'
-include { SAMTOOLS_SORT                } from '../modules/nf-core/samtools/sort'
+include { SAMTOOLS_SORT as SORT_2      } from '../modules/nf-core/samtools/sort'
 include { SAMTOOLS_STATS               } from '../modules/nf-core/samtools/stats'
 include { FREYJA_VARIANTS              } from '../modules/nf-core/freyja/variants/main'
 include { FREYJA_DEMIX                 } from '../modules/local/freyja/demix/main'
@@ -80,17 +83,40 @@ workflow COVIDWW {
     )
 
     //
+    // MODULE: Samtools fixmate
+    //
+    SAMTOOLS_FIXMATE (
+        BWAMEM2_MEM.out.bam
+    )
+
+    //
+    // MODULE: Samtools sort numerically
+    //
+    SORT_1 (
+        SAMTOOLS_FIXMATE.out.bam,
+        Channel.of('reference_genome').combine(ch_reference).first()
+    )
+
+    //
+    // MODULE: Samtools markdup
+    //
+    SAMTOOLS_MARKDUP (
+        SORT_1.out.bam,
+        Channel.of('reference_genome').combine(ch_reference).first()
+    )
+
+    //
     // MODULE: Index the bam file
     //
     SAMTOOLS_INDEX (
-        BWAMEM2_MEM.out.bam
+        SAMTOOLS_MARKDUP.out.bam
     )
 
     //
     // MODULE: Samtools stats
     //
     SAMTOOLS_STATS(
-        BWAMEM2_MEM.out.bam.join(SAMTOOLS_INDEX.out.bai),
+        SAMTOOLS_MARKDUP.out.bam.join(SAMTOOLS_INDEX.out.bai),
         Channel.of('reference_genome').combine(ch_reference).first()
     )
 
@@ -134,7 +160,7 @@ workflow COVIDWW {
     //
     // MODULE: samtools sort
     //
-    SAMTOOLS_SORT (
+    SORT_2 (
         passed,
         Channel.of('reference_genome').combine(ch_reference).first()
     )
@@ -143,7 +169,7 @@ workflow COVIDWW {
     // MODULE: Freyja find variants
     //
     FREYJA_VARIANTS (
-        SAMTOOLS_SORT.out.bam,
+        SORT_2.out.bam,
         ch_reference.first()
     )
 
@@ -183,13 +209,13 @@ workflow COVIDWW {
     if (params.metadata == '') {
         ch_versions = ch_versions.mix(SUBSAMPLE.out.versions, FASTP.out.versions, BWAMEM2_INDEX.out.versions,
                                   PRIMER_CHECK.out.versions, BWAMEM2_MEM.out.versions, SAMTOOLS_INDEX.out.versions,
-                                  SAMTOOLS_STATS.out.versions, IVAR_TRIM.out.versions, SAMTOOLS_SORT.out.versions,
+                                  SAMTOOLS_STATS.out.versions, IVAR_TRIM.out.versions, SORT_1.out.versions,
                                   FREYJA_VARIANTS.out.versions, FREYJA_DEMIX.out.versions, FREYJA_CLEAN.out.versions,
                                   SUMMARY.out.versions, PRIMER_USAGE.out.versions)
     } else {
         ch_versions = ch_versions.mix(SUBSAMPLE.out.versions, FASTP.out.versions, BWAMEM2_INDEX.out.versions,
                                   PRIMER_CHECK.out.versions, BWAMEM2_MEM.out.versions, SAMTOOLS_INDEX.out.versions,
-                                  SAMTOOLS_STATS.out.versions, IVAR_TRIM.out.versions, SAMTOOLS_SORT.out.versions,
+                                  SAMTOOLS_STATS.out.versions, IVAR_TRIM.out.versions, SORT_1.out.versions,
                                   FREYJA_VARIANTS.out.versions, FREYJA_DEMIX.out.versions, FREYJA_CLEAN.out.versions,
                                   SUMMARY.out.versions, MAP_PLOT.out.versions, PRIMER_USAGE.out.versions)
     }

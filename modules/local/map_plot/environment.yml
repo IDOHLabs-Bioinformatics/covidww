@@ -2,7 +2,6 @@ name: map_plot
 channels:
   - conda-forge
   - bioconda
-  - defaults
 dependencies:
   - conda-forge::r-ggplot2=3.4.4
   - conda-forge::r-rcolorbrewer=1.1.3

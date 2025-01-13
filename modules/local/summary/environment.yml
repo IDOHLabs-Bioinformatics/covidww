@@ -2,7 +2,6 @@ name: summary
 channels:
   - conda-forge
   - bioconda
-  - defaults
 dependencies:
   - conda-forge::r-ggplot2=3.4.4
   - conda-forge::r-ggpubr=0.6.0

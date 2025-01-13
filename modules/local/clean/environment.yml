@@ -2,6 +2,5 @@ name: clean
 channels:
   - conda-forge
   - bioconda
-  - defaults
 dependencies:
   - pandas=1.5.2

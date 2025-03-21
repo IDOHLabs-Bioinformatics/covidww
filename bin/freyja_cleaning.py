@@ -139,14 +139,17 @@ def parsing():
 if __name__ == '__main__':
     args = parsing()
     report = freyja_results(args.input)
-    frame = pd.DataFrame(columns=['Sample', 'Lineage', 'Abundance'])
+    frame = pd.DataFrame(columns=['Sample', 'Lineage', 'Abundance', 'Note'])
 
     # write the final results to a file
     for key, value in report.items():
         lineage = report[key][0]
         abundance = report[key][1]
         for k in range(len(lineage)):
-            row = [key, lineage[k], abundance[k]]
+            if abundance[k] <= 0.2:
+                row = [key, lineage[k], abundance[k], 'Low Confidence']
+            else:
+                row = [key, lineage[k], abundance[k], '']
             frame.loc[len(frame)] = row
 
     handle = 'wastewater_analysis_' + str(date.today()) + '.csv'

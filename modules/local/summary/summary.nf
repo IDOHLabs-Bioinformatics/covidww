@@ -2,8 +2,14 @@ process SUMMARY {
     tag "summary"
     label "process_low"
 
-    conda "${moduleDir}/environment.yml"
-    container null
+    if (workflow.profile.contains('conda')) {
+        conda "${moduleDir}/environment.yml"
+    } else {
+        conda null
+    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/mulled-v2-28790ac237c42b0eb0766a9c8c8f2232e355052a:6c44bb031cb466096171291cf8427fb7411a71c9-0' :
+        'biocontainers/mulled-v2-28790ac237c42b0eb0766a9c8c8f2232e355052a:6c44bb031cb466096171291cf8427fb7411a71c9-0' }"
 
     input:
     path deconvolution

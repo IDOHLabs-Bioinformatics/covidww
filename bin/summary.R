@@ -1,5 +1,5 @@
 library(ggplot2)
-library(ggpubr)
+library(gridExtra)
 args <- commandArgs(T)
 
 overall_pie <- function(frame) {
@@ -37,6 +37,7 @@ individual <- function(sample, frame) {
 # read the info
 input <- args[1]
 results <- read.csv(input, sep=',')
+title <- paste0('demix_summary_', Sys.Date(), '.pdf')
 
 # overall plot
 overall <- overall_pie(results)
@@ -48,14 +49,30 @@ results <- results[order(results$Sample),]
 samples <- unique(results$Sample)
 individual_plots <- lapply(samples, individual, results)
 
-plot_count <- round(length(individual_plots) + 1)
+plot_count <- length(individual_plots)
 if (plot_count > 6) {
   rows <- 3
+
+  pdf(title, width=8, height=10)
+  for (i in seq(1, plot_count, by=6)[-length(seq(0, plot_count, by=6))]) {
+    grid.arrange(grobs=individual_plots[i:(i+5)], nrow=rows, ncol=2)
+  }
+
+  if (i != length(individual_plots)) {
+    grid.arrange(grobs=individual_plots[(i+6):length(individual_plots)],
+                 nrow=round(length(individual_plots[(i+6):length(individual_plots)]) / 2, 0) + 1,
+                 ncol=2)
+  }
+
+  dev.off()
 }else{
-  rows <- round(plot_count / 2, 0)
+  rows <- max(1, round(plot_count / 2, 0))
+  pdf(title, width=8, height=10)
+  grid.arrange(grobs=individual_plots, nrow=rows, ncol=2)
+  dev.off()
 }
 
-plot <- ggarrange(overall, plotlist=individual_plots, ncol=2, nrow=rows)
+#plot <- ggarrange(overall, plotlist=individual_plots, ncol=2, nrow=rows)
 
-title <- paste0('demix_summary_', Sys.Date(), '.pdf')
-ggexport(plot, filename=title)
+#
+#ggexport(plot, filename=title)

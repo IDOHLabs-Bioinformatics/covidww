@@ -128,7 +128,7 @@ workflow PIPELINE_INITIALISATION {
     // Create a channel from the metadata file if present
     // if default of '', then make a holder value channel
     //
-    if (metadata_file == '') {
+    if (metadata_file == null) {
         Channel.empty()
         .set{ ch_metadata }
     }else {

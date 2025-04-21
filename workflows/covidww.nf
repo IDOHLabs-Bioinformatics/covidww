@@ -206,7 +206,7 @@ workflow COVIDWW {
     }
 
     ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.json.collect{it[1]}, SAMTOOLS_STATS.out.stats.collect{it[1]})
-    if (params.metadata == '') {
+    if (params.metadata == null) {
         ch_versions = ch_versions.mix(SUBSAMPLE.out.versions, FASTP.out.versions, BWAMEM2_INDEX.out.versions,
                                   PRIMER_CHECK.out.versions, BWAMEM2_MEM.out.versions, SAMTOOLS_INDEX.out.versions,
                                   SAMTOOLS_STATS.out.versions, IVAR_TRIM.out.versions, SORT_1.out.versions,

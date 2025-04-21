@@ -8,8 +8,8 @@ process FREYJA_CLEAN {
         conda null
     }
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-2076f4a3fb468a04063c9e6b7747a630abb457f6:fccb0c41a243c639e11dd1be7b74f563e624fcca-0' :
-        'biocontainers/mulled-v2-2076f4a3fb468a04063c9e6b7747a630abb457f6:fccb0c41a243c639e11dd1be7b74f563e624fcca-0' }"
+        ' https://depot.galaxyproject.org/singularity/bioframe:0.7.0--pyhdfd78af_0' :
+        'biocontainers/bioframe:0.8.0--pyhdfd78af_0' }"
 
     input:
     path("*")

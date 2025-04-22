@@ -27,7 +27,7 @@ process FREYJA_CLEAN {
     mkdir demix
     mv *.txt demix
 
-    python ${projectDir}/bin/freyja_cleaning.py --input demix $args
+    freyja_cleaning.py --input demix $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -23,7 +23,7 @@ process PRIMER_USAGE {
 
     script:
     """
-    python ${projectDir}/bin/primer_usage.py -s "${samples}"
+    primer_usage.py -s "${samples}"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

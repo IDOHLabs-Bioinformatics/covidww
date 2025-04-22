@@ -1,9 +1,10 @@
+#!/usr/bin/env python3
+
 """
 Created on Mon Mar  4 13:41:54 2024
 
 @author: David Schaeper
 """
-#!/usr/local/bin/env python
 
 import argparse
 import os

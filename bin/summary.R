@@ -1,3 +1,5 @@
+#!/usr/local/bin/Rscript
+
 library(ggplot2)
 library(gridExtra)
 args <- commandArgs(T)

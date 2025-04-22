@@ -23,8 +23,7 @@ process SUMMARY {
 
     script:
     """
-    Rscript ${projectDir}/bin/summary.R \\
-        ${deconvolution}
+    summary.R ${deconvolution}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -8,8 +8,9 @@ process FREYJA_CLEAN {
         conda null
     }
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        ' https://depot.galaxyproject.org/singularity/bioframe:0.7.0--pyhdfd78af_0' :
-        'biocontainers/bioframe:0.8.0--pyhdfd78af_0' }"
+        'staphb/pandas' :
+        'quay.io/staphb/pandas' }"
+
 
     input:
     path("*")

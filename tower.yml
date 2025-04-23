@@ -5,3 +5,9 @@ reports:
     display: "Freyja deconvolution result"
   "**/map/*.png":
     display: "Map of the samples and their demixing results as pie charts on the city from metadata."
+  "demix_summary*":
+    display: "Pie charts of the demixed data for each sample."
+  "primer_usage.csv":
+    display: "The proportion of the primers used in each sample."
+  "wastewater_analysis*":
+    display: "The final summary of the demixing."

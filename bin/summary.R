@@ -60,7 +60,7 @@ if (plot_count > 6) {
     grid.arrange(grobs=individual_plots[i:(i+5)], nrow=rows, ncol=2)
   }
 
-  if (i != length(individual_plots)) {
+  if (i + 5 != length(individual_plots)) {
     grid.arrange(grobs=individual_plots[(i+6):length(individual_plots)],
                  nrow=round(length(individual_plots[(i+6):length(individual_plots)]) / 2, 0) + 1,
                  ncol=2)

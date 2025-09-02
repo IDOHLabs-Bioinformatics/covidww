@@ -27,7 +27,7 @@ process SAMTOOLS_FIXMATE {
         $args \\
         --threads ${task.cpus-1} \\
         $bam \\
-        ${prefix}.bam \\
+        ${prefix}_fixmate.bam \\
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

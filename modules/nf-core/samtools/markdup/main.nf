@@ -37,7 +37,7 @@ process SAMTOOLS_MARKDUP {
         -@ $task.cpus \\
         -T $prefix \\
         $input \\
-        ${prefix}.${extension}
+        ${prefix}_dedupped.${extension}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -28,7 +28,6 @@ process SAMTOOLS_MARKDUP {
                     args.contains("--output-fmt bam") ? "bam" :
                     args.contains("--output-fmt cram") ? "cram" :
                     "bam"
-    if ("$input" == "${prefix}.${extension}") error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
     """
     samtools \\
         markdup \\

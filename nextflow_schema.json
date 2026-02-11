@@ -67,6 +67,7 @@
                 "metadata": {
                     "type": "string",
                     "format": "file-path",
+                    "nullable": true,
                     "exists": true,
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.csv$",
@@ -272,16 +273,16 @@
     },
     "allOf": [
         {
-            "$ref": "#/defs/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/defs/pipeline_specific_parameters"
+            "$ref": "#/$defs/pipeline_specific_parameters"
         },
         {
-            "$ref": "#/defs/max_job_request_options"
+            "$ref": "#/$defs/max_job_request_options"
         },
         {
-            "$ref": "#/defs/generic_options"
+            "$ref": "#/$defs/generic_options"
         }
     ]
 }

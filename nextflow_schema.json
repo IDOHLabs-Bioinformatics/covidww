@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/IDOHLabs-Bioinformatics/covidww/blob/dev/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/IDOHLabs-Bioinformatics/covidww/refs/heads/dev/nextflow_schema.json",
     "title": "covidww pipeline parameters",
     "description": "Quantification of SARS-CoV-2 lineages within wastewater samples.",
     "type": "object",

@@ -69,7 +69,7 @@
                     "format": "file-path",
                     "exists": true,
                     "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.csv$|''",
+                    "pattern": "^\\S+\\.csv$",
                     "description": "A comma separated file containing metadata",
                     "help": "A comma separated file containing the columns Sample, City, and State that is used to plot the data to a state map."
                 },

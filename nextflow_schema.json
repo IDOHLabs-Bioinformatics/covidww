@@ -1,10 +1,10 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/IDOHLabs-Bioinformatics/covidww/blob/dev/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/IDOHLabs-Bioinformatics/covidww/refs/heads/dev/nextflow_schema.json",
     "title": "covidww pipeline parameters",
     "description": "Quantification of SARS-CoV-2 lineages within wastewater samples.",
     "type": "object",
-    "defs": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -67,6 +67,7 @@
                 "metadata": {
                     "type": "string",
                     "format": "file-path",
+                    "nullable": true,
                     "exists": true,
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.csv$",
@@ -272,16 +273,16 @@
     },
     "allOf": [
         {
-            "$ref": "#/defs/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/defs/pipeline_specific_parameters"
+            "$ref": "#/$defs/pipeline_specific_parameters"
         },
         {
-            "$ref": "#/defs/max_job_request_options"
+            "$ref": "#/$defs/max_job_request_options"
         },
         {
-            "$ref": "#/defs/generic_options"
+            "$ref": "#/$defs/generic_options"
         }
     ]
 }

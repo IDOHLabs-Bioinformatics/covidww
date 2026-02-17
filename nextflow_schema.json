@@ -4,7 +4,7 @@
     "title": "covidww pipeline parameters",
     "description": "Quantification of SARS-CoV-2 lineages within wastewater samples.",
     "type": "object",
-    "definitions": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -273,16 +273,16 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/definitions/pipeline_specific_parameters"
+            "$ref": "#/$defs/pipeline_specific_parameters"
         },
         {
-            "$ref": "#/definitions/max_job_request_options"
+            "$ref": "#/$defs/max_job_request_options"
         },
         {
-            "$ref": "#/definitions/generic_options"
+            "$ref": "#/$defs/generic_options"
         }
     ]
 }

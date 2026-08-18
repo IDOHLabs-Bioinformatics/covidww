@@ -23,9 +23,9 @@ if __name__ == '__main__':
             info = info.split()
             if float(info[2]) >= 0.65:
                 name = info[0].split(':')[1]
-                row = '{},{},{}\\n'.format(name, info[2], 'pass')
+                row = '{},{},{}\n'.format(name, info[2], 'pass')
                 out.write(row)
             else:
                 name = info[0].split(':')[1]
-                row = '{},{},{}\\n'.format(name, info[2], 'fail')
+                row = '{},{},{}\n'.format(name, info[2], 'fail')
                 out.write(row)
